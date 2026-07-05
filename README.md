@@ -92,7 +92,18 @@ await client.legislation.list();
 await client.search.query("محامٍ", { scope: "legislation" });
 ```
 
-## Production (VPS + HTTPS)
+## Production (adalahai.com)
+
+```bash
+cp .env.prod.adalahai.example .env.prod
+# عدّل JWT_SECRET, POSTGRES_PASSWORD, OPENAI_API_KEY
+./scripts/cutover-adalahai.sh
+```
+
+يستبدل النشر القديم على `eadala/adala-ai` (Replit/Clerk).  
+راجع [.docs/MIGRATION-adala-ai-cutover.md](.docs/MIGRATION-adala-ai-cutover.md).
+
+## Production (generic / VPS)
 
 ```bash
 cp .env.prod.example .env.prod

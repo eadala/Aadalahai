@@ -71,6 +71,7 @@
 | Staging + Prod Deploy | Sprint-014 | ✅ |
 | Legislation Corpus | Sprint-015 | ✅ |
 | Legislation RAG in Chat | Sprint-016 | ✅ |
+| adalahai.com cutover | Sprint-017 | ✅ |
 
 ## كيفية تحديث هذه الوثيقة
 

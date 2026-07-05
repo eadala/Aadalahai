@@ -9,6 +9,18 @@
 
 ## النشر على VPS (Production + HTTPS)
 
+### 0. ترحيل من adala-ai (adalahai.com)
+
+إذا كنت تستبدل النشر القديم على `adalahai.com`:
+
+```bash
+cp .env.prod.adalahai.example .env.prod
+# عدّل الأسرار
+./scripts/cutover-adalahai.sh
+```
+
+راجع [.docs/MIGRATION-adala-ai-cutover.md](MIGRATION-adala-ai-cutover.md) للخطوات الكاملة (DNS, Cloudflare, إيقاف Replit).
+
 ### 1. المتطلبات
 
 - VPS مع Docker و Docker Compose
@@ -28,12 +40,12 @@ cp .env.prod.example .env.prod
 عدّل `.env.prod`:
 
 ```bash
-DOMAIN=adalah.example.com
-WEB_DOMAIN=adalah.example.com
-API_DOMAIN=api.adalah.example.com
-ACME_EMAIL=admin@adalah.example.com
-NEXT_PUBLIC_API_URL=https://api.adalah.example.com
-CORS_ORIGINS=https://adalah.example.com
+DOMAIN=adalahai.com
+WEB_DOMAIN=adalahai.com
+API_DOMAIN=api.adalahai.com
+ACME_EMAIL=admin@adalahai.com
+NEXT_PUBLIC_API_URL=https://api.adalahai.com
+CORS_ORIGINS=https://adalahai.com,https://www.adalahai.com
 JWT_SECRET=<random-64-chars>
 POSTGRES_PASSWORD=<strong-password>
 OPENAI_API_KEY=sk-...
@@ -70,13 +82,13 @@ npm run prod:smoke
 
 | Workflow | التشغيل | الغرض |
 |---|---|---|
-| `ci.yml` | push/PR | اختبارات + build (71 API + 9 SDK + 7 E2E) |
-| `staging.yml` | push to main | Staging deploy + 16 smoke tests |
-| `production.yml` | manual فقط | Production deploy + smoke (mock AI على CI) |
+| `ci.yml` | push/PR | اختبارات + build |
+| `staging.yml` | push to main | Staging deploy + 19 smoke tests |
+| `production.yml` | manual فقط | Production deploy + smoke |
 
-## Smoke Tests (16)
+## Smoke Tests (19)
 
-يشمل مسارات Sprint 011–013: analytics, onboarding (ضمني), document analyze, legal search.
+يشمل: legislation RAG في المحادثة، corpus، scoped search، analytics، document analyze.
 
 ## Rollback
 
@@ -88,5 +100,7 @@ git checkout <previous-tag>
 
 ## المراجع
 
+- [MIGRATION-adala-ai-cutover.md](MIGRATION-adala-ai-cutover.md)
+- [ADR-018](ADR/018-adalahai-domain-migration.md)
 - [ADR-010](ADR/010-production-https.md)
 - [deployment playbook](../.ai/Playbooks/deployment.md)
