@@ -102,6 +102,19 @@ export class AdalahClient {
     metrics: () => this.getText("/metrics", false),
   };
 
+  readonly analytics = {
+    me: () => this.get<{ analytics: import("./types.js").UserAnalytics }>("/api/v1/analytics/me"),
+  };
+
+  readonly onboarding = {
+    getStatus: () => this.get<import("./types.js").OnboardingStatus>("/api/v1/onboarding/status"),
+    completeLawyer: (input: import("./types.js").LawyerOnboardingInput) =>
+      this.post<{
+        user: import("./types.js").User;
+        onboarding: import("./types.js").OnboardingStatus;
+      }>("/api/v1/onboarding/lawyer", input),
+  };
+
   setTokens(tokens: AuthTokens) {
     this.storage?.setTokens(tokens.accessToken, tokens.refreshToken);
   }

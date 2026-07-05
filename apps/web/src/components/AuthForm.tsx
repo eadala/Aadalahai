@@ -15,6 +15,7 @@ export function AuthForm({ mode }: AuthFormProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [accountType, setAccountType] = useState<"user" | "lawyer">("user");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -29,7 +30,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           ? await api.login(email, password)
           : await api.register(email, password, name);
 
-      router.push("/chat");
+      if (mode === "register" && accountType === "lawyer") {
+        router.push("/onboarding");
+      } else if (mode === "login" && result.user.role === "lawyer") {
+        router.push("/dashboard");
+      } else {
+        router.push("/chat");
+      }
     } catch (err) {
       if (err instanceof AdalahApiError) {
         setError(err.message);
@@ -51,6 +58,36 @@ export function AuthForm({ mode }: AuthFormProps) {
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {mode === "register" && (
+          <div>
+            <label className="mb-1 block text-sm text-[var(--text-secondary)]">نوع الحساب</label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setAccountType("user")}
+                className={`flex-1 rounded-lg border py-2 text-sm ${
+                  accountType === "user"
+                    ? "border-[var(--accent)] bg-[var(--accent)]/10"
+                    : "border-[var(--border)]"
+                }`}
+              >
+                مستخدم
+              </button>
+              <button
+                type="button"
+                onClick={() => setAccountType("lawyer")}
+                className={`flex-1 rounded-lg border py-2 text-sm ${
+                  accountType === "lawyer"
+                    ? "border-[var(--accent)] bg-[var(--accent)]/10"
+                    : "border-[var(--border)]"
+                }`}
+              >
+                محامٍ
+              </button>
+            </div>
+          </div>
+        )}
+
         {mode === "register" && (
           <div>
             <label className="mb-1 block text-sm text-[var(--text-secondary)]">الاسم</label>

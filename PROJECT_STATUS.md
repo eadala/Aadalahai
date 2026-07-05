@@ -1,24 +1,26 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-010 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-011 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
 | المرحلة | 2 — الذكاء القانوني |
-| السبرنت الحالي | Sprint-011 (مخطط) |
-| ADRs | 11 |
-| API Tests | 58 ✅ (+4 prompts, +2 live optional) |
+| السبرنت الحالي | Sprint-012 (مخطط) |
+| ADRs | 12 |
+| API Tests | 63 ✅ |
 | SDK Tests | 7 ✅ |
 | E2E Tests | 4 ✅ |
 
-## Sprint-010 — Prompt Engineering + OpenAI Live ✅
+## Sprint-011 — Analytics + Lawyer Onboarding ✅
 
-- `legal-assistant.ts` — prompts عربية هندسية
-- تنسيق إجابة: ملخص → تفصيل → تنبيه
-- `openai-smoke.mjs` + workflow يدوي
-- ADR-011
+- جدول `lawyer_profiles` + migration `0002`
+- `GET /api/v1/analytics/me` — إحصائيات المستخدم
+- `GET/POST /api/v1/onboarding/*` — تسجيل المحامي
+- Web: `/dashboard`, `/onboarding`
+- SDK: `analytics.me()`, `onboarding.*`
+- ADR-012
 
 ## OpenAI Live
 
@@ -28,4 +30,4 @@ OPENAI_API_KEY=sk-... npm run openai:smoke
 
 ## الخطوة التالية
 
-Sprint-011: Analytics + lawyer onboarding
+Sprint-012: توسيع لوحة المحامين + ميزات المرحلة 2
