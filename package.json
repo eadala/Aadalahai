@@ -6,10 +6,16 @@
     "apps/*"
   ],
   "scripts": {
-    "dev": "npm run dev -w @adalah/api",
-    "build": "npm run build -w @adalah/api",
+    "dev": "npm run dev:api",
+    "dev:api": "npm run dev -w @adalah/api",
+    "dev:web": "npm run dev -w @adalah/web",
+    "dev:all": "npm run dev:api & npm run dev:web",
+    "build": "npm run build -w @adalah/api && npm run build -w @adalah/web",
+    "build:api": "npm run build -w @adalah/api",
+    "build:web": "npm run build -w @adalah/web",
     "test": "npm run test -w @adalah/api",
-    "lint": "npm run lint -w @adalah/api",
+    "test:e2e": "npm run test:e2e -w @adalah/web",
+    "lint": "npm run lint -w @adalah/api && npm run lint -w @adalah/web",
     "db:generate": "npm run db:generate -w @adalah/api",
     "db:migrate": "npm run db:migrate -w @adalah/api",
     "db:studio": "npm run db:studio -w @adalah/api"

@@ -13,6 +13,9 @@
 
 ```
 adalah-ai/
+├── apps/
+│   ├── api/        # Fastify backend
+│   └── web/        # Next.js frontend (RTL Arabic)
 ├── .docs/          # Knowledge Base — 100+ وثيقة مستهدفة
 │   ├── Vision.md
 │   ├── Roadmap.md
@@ -68,8 +71,10 @@ cp .env.example .env
 docker compose up -d      # Postgres + Redis
 npm install
 npm run db:migrate
-npm run dev               # API على http://localhost:3001
-npm test                  # 15 اختبار
+npm run dev:api           # API على http://localhost:3001
+npm run dev:web           # Web على http://localhost:3000
+npm test                  # 30 اختبار API
+npm run test:e2e          # 3 اختبار E2E
 ```
 
 ## الترخيص
