@@ -2,17 +2,16 @@
 
 **الفترة**: 2026-07-05  
 **الهدف**: استبدال Replit بنشر Docker على `adalahai.com` / `api.adalahai.com`  
-**الحالة**: 🟡 جاهز للتنفيذ — في انتظار DNS + VPS + نشر الكود إلى `adala-ai`
+**الحالة**: 🔴 Replit متوقف — في انتظار VPS + DNS
 
-## الحالة الحالية (preflight)
+## الحالة الحالية
 
 | الفحص | الحالة |
 |---|---|
-| `adalahai.com` DNS | ✅ Cloudflare (172.67.x / 104.21.x) |
-| `api.adalahai.com` DNS | ❌ لا يوجد A record |
-| WEB حي | ⚠️ Replit/Vite قديم (`built on Replit`) |
-| API `/health` | ❌ غير قابل للوصول |
-| `eadala/adala-ai` متزامن | ⏳ يتطلب `publish:adala-ai` |
+| Replit | 🔴 متوقف (المستخدم) |
+| `adalahai.com` | ⚠️ قد يعرض cache قديم عبر Cloudflare |
+| `api.adalahai.com` | ❌ بدون DNS |
+| VPS deploy | ⏳ يحتاج `VPS_HOST` + SSH key |
 
 ## المهام
 
@@ -37,13 +36,22 @@ npm run publish:adala-ai
 # أو GitHub Actions: Publish to adala-ai (secret ADALA_AI_SYNC_TOKEN)
 ```
 
-### 2 — إعداد VPS
+### 2 — نشر على VPS (بديل Replit)
+
+**GitHub Actions (موصى به):** أضف secrets ثم شغّل `VPS Deploy adalahai.com`:
+
+| Secret | الوصف |
+|---|---|
+| `VPS_HOST` | IP خادم Hetzner/VPS |
+| `VPS_SSH_PRIVATE_KEY` | مفتاح SSH الخاص |
+| `VPS_USER` | `root` (اختياري) |
+| `PROD_JWT_SECRET` | عشوائي 64+ حرف |
+| `PROD_POSTGRES_PASSWORD` | كلمة مرور قوية |
+| `PROD_OPENAI_API_KEY` | `sk-...` |
 
 ```bash
-# على الخادم (Ubuntu/Debian)
-curl -fsSL https://raw.githubusercontent.com/eadala/adala-ai/main/scripts/vps-bootstrap-adalahai.sh | bash
-# أو بعد clone:
-sudo ./scripts/vps-bootstrap-adalahai.sh
+# أو يدوياً على الخادم:
+curl -fsSL https://raw.githubusercontent.com/eadala/Aadalahai/main/scripts/vps-bootstrap-adalahai.sh | bash
 ```
 
 عدّل `.env.prod` ثم:

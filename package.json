@@ -26,6 +26,7 @@
     "publish:adala-ai": "./scripts/publish-to-adala-ai.sh",
     "preflight:adalahai": "./scripts/preflight-adalahai.sh",
     "verify:sync": "./scripts/verify-sync.sh",
+    "write:prod-env": "./scripts/write-prod-env.sh",
     "prod:smoke:remote": "API_URL=https://api.adalahai.com WEB_URL=https://adalahai.com node scripts/production-smoke.mjs",
     "verify:dns": "./scripts/verify-dns.sh",
     "prod:down": "docker compose -f docker-compose.prod.yml --env-file .env.prod down",

@@ -2,7 +2,7 @@
 # Bootstrap a fresh VPS for adalahai.com production (run ON the server as root/sudo)
 set -euo pipefail
 
-REPO_URL="${REPO_URL:-https://github.com/eadala/adala-ai.git}"
+REPO_URL="${REPO_URL:-https://github.com/eadala/Aadalahai.git}"
 INSTALL_DIR="${INSTALL_DIR:-/opt/adala-ai}"
 BRANCH="${BRANCH:-main}"
 

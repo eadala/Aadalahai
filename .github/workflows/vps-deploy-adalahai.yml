@@ -1,0 +1,87 @@
+name: VPS Deploy adalahai.com
+
+# Deploy Engineering OS to your VPS over SSH (replaces stopped Replit).
+# Required secrets: VPS_HOST, VPS_SSH_PRIVATE_KEY, PROD_JWT_SECRET,
+#   PROD_POSTGRES_PASSWORD, PROD_OPENAI_API_KEY
+# Optional: VPS_USER (default root), ACME_EMAIL
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy" to deploy to VPS'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'deploy'
+
+    steps:
+      - name: Validate secrets
+        run: |
+          for s in VPS_HOST VPS_SSH_PRIVATE_KEY PROD_JWT_SECRET PROD_POSTGRES_PASSWORD PROD_OPENAI_API_KEY; do
+            if [ -z "${!s:-}" ]; then
+              echo "Missing secret: $s"
+              exit 1
+            fi
+          done
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_SSH_PRIVATE_KEY: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          PROD_JWT_SECRET: ${{ secrets.PROD_JWT_SECRET }}
+          PROD_POSTGRES_PASSWORD: ${{ secrets.PROD_POSTGRES_PASSWORD }}
+          PROD_OPENAI_API_KEY: ${{ secrets.PROD_OPENAI_API_KEY }}
+
+      - name: Deploy Docker stack on VPS
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          JWT_SECRET: ${{ secrets.PROD_JWT_SECRET }}
+          POSTGRES_PASSWORD: ${{ secrets.PROD_POSTGRES_PASSWORD }}
+          OPENAI_API_KEY: ${{ secrets.PROD_OPENAI_API_KEY }}
+          ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER || 'root' }}
+          key: ${{ secrets.VPS_SSH_PRIVATE_KEY }}
+          command_timeout: 30m
+          envs: JWT_SECRET,POSTGRES_PASSWORD,OPENAI_API_KEY,ACME_EMAIL
+          script: |
+            set -euo pipefail
+            INSTALL_DIR=/opt/adala-ai
+            # Engineering OS lives on Aadalahai until publish:adala-ai completes
+            REPO_URL=https://github.com/eadala/Aadalahai.git
+
+            if ! command -v docker >/dev/null 2>&1; then
+              curl -fsSL https://get.docker.com | sh
+              systemctl enable --now docker
+            fi
+
+            if [ -d "$INSTALL_DIR/.git" ]; then
+              git -C "$INSTALL_DIR" fetch origin
+              git -C "$INSTALL_DIR" checkout main
+              git -C "$INSTALL_DIR" pull --ff-only origin main
+            else
+              git clone --branch main "$REPO_URL" "$INSTALL_DIR"
+            fi
+
+            cd "$INSTALL_DIR"
+            chmod +x scripts/*.sh
+
+            JWT_SECRET="$JWT_SECRET" POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+              OPENAI_API_KEY="$OPENAI_API_KEY" ACME_EMAIL="${ACME_EMAIL:-admin@adalahai.com}" \
+              ./scripts/write-prod-env.sh .env.prod
+
+            ./scripts/cutover-adalahai.sh .env.prod
+
+            echo ""
+            echo "Deploy complete. Point Cloudflare A records to this server:"
+            curl -fsS ifconfig.me || hostname -I | awk '{print $1}'
+            echo ""
+            echo "  adalahai.com + api.adalahai.com → above IP"
+
+      - name: Remote smoke (after DNS propagates)
+        if: always()
+        run: |
+          echo "After DNS points to VPS, run: npm run prod:smoke:remote"
+          echo "Or workflow: adalahai Remote Smoke"
