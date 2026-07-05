@@ -34,8 +34,12 @@ describe("Enhanced Citations", () => {
     const chunks: RetrievedChunk[] = [
       {
         chunkId: "1",
+        source: "user",
         documentId: "d1",
+        legislationId: null,
         documentTitle: "نظام العمل",
+        articleRef: null,
+        category: null,
         content: "المادة 77: للعامل الحق في إنهاء العقد",
         similarity: 0.8,
       },
@@ -52,8 +56,12 @@ describe("Enhanced Citations", () => {
     const chunks: RetrievedChunk[] = [
       {
         chunkId: "2",
+        source: "user",
         documentId: "d1",
+        legislationId: null,
         documentTitle: "نظام العمل",
+        articleRef: null,
+        category: null,
         content: "نص غير ذي صلة",
         similarity: 0.2,
       },
@@ -62,5 +70,27 @@ describe("Enhanced Citations", () => {
     const citations = buildEnhancedCitations(chunks);
     expect(citations).toHaveLength(1);
     expect(citations[0].confidence).toBe("low");
+  });
+
+  it("should build legislation citations with articleRef", () => {
+    const chunks: RetrievedChunk[] = [
+      {
+        chunkId: "leg-1",
+        source: "legislation",
+        documentId: null,
+        legislationId: "ls-1",
+        documentTitle: "نظام الإجراءات الجزائية",
+        articleRef: "المادة 112",
+        category: "جزائي",
+        content: "المادة 112: للمتهم الحق في الاستعانة بمحامٍ للدفاع عنه",
+        similarity: 0.75,
+      },
+    ];
+
+    const citations = buildEnhancedCitations(chunks, "محامٍ");
+    expect(citations).toHaveLength(1);
+    expect(citations[0].source).toBe("legislation");
+    expect(citations[0].articleRef).toBe("المادة 112");
+    expect(citations[0].legislationId).toBe("ls-1");
   });
 });

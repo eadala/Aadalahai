@@ -76,14 +76,15 @@ describe("Legal Search API", () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it("should return empty results when no documents match", async () => {
+  it("should return empty user results when no documents match", async () => {
     const response = await app.inject({
       method: "GET",
-      url: "/api/v1/search?q=تشريع غير موجود&scope=user",
+      url: "/api/v1/search?q=xyznomatch123&scope=user",
       headers: authHeaders(),
     });
 
     expect(response.statusCode).toBe(200);
+    expect(response.json().scope).toBe("user");
     expect(response.json().results).toEqual([]);
   });
 });

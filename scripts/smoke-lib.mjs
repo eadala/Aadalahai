@@ -129,6 +129,32 @@ export async function runSmokeTests({
   }
 
   {
+    const { res: sessionRes, body: sessionBody } = await api("/api/v1/chat/sessions", {
+      method: "POST",
+      headers: auth,
+      body: JSON.stringify({ title: "تشريعات smoke" }),
+    });
+    if (sessionRes.status === 201 && sessionBody?.session?.id) {
+      const { res, body } = await api(
+        `/api/v1/chat/sessions/${sessionBody.session.id}/messages`,
+        {
+          method: "POST",
+          headers: auth,
+          body: JSON.stringify({
+            content: "ما حق المحامي في الدفاع الجزائي؟",
+            stream: false,
+          }),
+        }
+      );
+      const hasLegislationCitation = body?.assistantMessage?.citations?.some(
+        (c) => c.source === "legislation"
+      );
+      if (res.ok && hasLegislationCitation) pass("chat legislation rag");
+      else fail(`chat legislation rag (${res.status})`);
+    } else fail(`chat legislation rag session (${sessionRes.status})`);
+  }
+
+  {
     const { res, body } = await api("/api/v1/documents", {
       method: "POST",
       headers: auth,

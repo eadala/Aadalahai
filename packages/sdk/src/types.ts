@@ -6,8 +6,11 @@ export interface LegalArticle {
 
 export interface Citation {
   index: number;
-  documentId: string;
+  source: "user" | "legislation";
+  documentId: string | null;
+  legislationId: string | null;
   documentTitle: string;
+  articleRef: string | null;
   chunkContent: string;
   excerpt: string;
   similarity: number;

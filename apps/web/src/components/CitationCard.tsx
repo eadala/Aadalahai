@@ -25,7 +25,7 @@ export function CitationCard({ citations }: CitationCardProps) {
       </p>
       {citations.map((c) => (
         <div
-          key={`${c.documentId}-${c.index}`}
+          key={`${c.source}-${c.legislationId ?? c.documentId ?? c.index}-${c.index}`}
           className="rounded-lg border border-[var(--border)] bg-[var(--bg-primary)] text-sm"
         >
           <button
@@ -38,6 +38,12 @@ export function CitationCard({ citations }: CitationCardProps) {
                 {c.index}
               </span>
               <span className="font-medium text-[var(--accent)]">{c.documentTitle}</span>
+              {c.source === "legislation" && (
+                <span className="rounded-full bg-[var(--bg-tertiary)] px-2 py-0.5 text-xs">تشريع</span>
+              )}
+              {c.articleRef && (
+                <span className="text-xs text-[var(--text-secondary)]">{c.articleRef}</span>
+              )}
             </div>
             <div className="flex items-center gap-2">
               <span className={`rounded-full px-2 py-0.5 text-xs ${confidenceLabels[c.confidence].color}`}>

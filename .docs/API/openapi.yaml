@@ -293,8 +293,14 @@ components:
       type: object
       properties:
         index: { type: integer }
+        source: { type: string, enum: [user, legislation] }
+        documentId: { type: string, format: uuid, nullable: true }
+        legislationId: { type: string, format: uuid, nullable: true }
         documentTitle: { type: string }
+        articleRef: { type: string, nullable: true }
+        chunkContent: { type: string }
         excerpt: { type: string }
+        similarity: { type: number }
         confidence: { type: string, enum: [high, medium, low] }
         articles:
           type: array
