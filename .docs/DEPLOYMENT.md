@@ -70,9 +70,13 @@ npm run prod:smoke
 
 | Workflow | التشغيل | الغرض |
 |---|---|---|
-| `ci.yml` | push/PR | اختبارات + build |
-| `staging.yml` | push to main | Staging smoke |
-| `production.yml` | manual فقط | Production smoke على CI |
+| `ci.yml` | push/PR | اختبارات + build (71 API + 9 SDK + 7 E2E) |
+| `staging.yml` | push to main | Staging deploy + 16 smoke tests |
+| `production.yml` | manual فقط | Production deploy + smoke (mock AI على CI) |
+
+## Smoke Tests (16)
+
+يشمل مسارات Sprint 011–013: analytics, onboarding (ضمني), document analyze, legal search.
 
 ## Rollback
 

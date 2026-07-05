@@ -1,31 +1,33 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-013 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-014 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
 | المرحلة | 2 — الذكاء القانوني |
-| السبرنت الحالي | Sprint-014 (مخطط) |
-| ADRs | 14 |
+| السبرنت الحالي | Sprint-015 (مخطط) |
+| ADRs | 15 |
 | API Tests | 71 ✅ |
 | SDK Tests | 10 ✅ |
 | E2E Tests | 7 ✅ |
+| Smoke Tests | 16 ✅ (staging + prod) |
 
-## Sprint-013 — Hybrid Legal Search ✅
+## Sprint-014 — Staging + Production Deploy ✅
 
-- `GET /api/v1/search` — بحث هجين (vector + keyword)
-- `GET /documents/:id/analyses/latest` — آخر تحليل
-- Web: `/search` — واجهة البحث القانوني
-- ADR-014
+- نشر Sprints 011–013 على Staging و Production
+- 16 smoke test (analytics, analyze, search)
+- إصلاح production CI workflow (mock AI)
+- `wait-for-db.mjs` لموثوقية Docker startup
+- ADR-015
 
-## OpenAI Live
+## آخر الميزات المُنشرة
 
-```bash
-OPENAI_API_KEY=sk-... npm run openai:smoke
-```
+- Sprint-011: Analytics + Lawyer Onboarding
+- Sprint-012: Dashboard + Document Analysis
+- Sprint-013: Hybrid Legal Search
 
 ## الخطوة التالية
 
-Sprint-014: corpus تشريعات خارجي / نشر Staging→Production
+Sprint-015: corpus تشريعات خارجي / OpenAI على Staging

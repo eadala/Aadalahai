@@ -12,3 +12,5 @@ out/
 *.tsbuildinfo
 playwright-report/
 test-results/
+.env.staging
+.env.prod

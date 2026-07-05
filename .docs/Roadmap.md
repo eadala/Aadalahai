@@ -68,6 +68,7 @@
 | Analytics + Onboarding | Sprint-011 | ✅ |
 | Dashboard + Doc Analysis | Sprint-012 | ✅ |
 | Hybrid Legal Search | Sprint-013 | ✅ |
+| Staging + Prod Deploy | Sprint-014 | ✅ |
 
 ## كيفية تحديث هذه الوثيقة
 
