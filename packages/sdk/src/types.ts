@@ -154,3 +154,12 @@ export interface DocumentAnalysis {
   recommendations: string[];
   createdAt: string;
 }
+
+export interface SearchResult {
+  chunkId: string;
+  documentId: string;
+  documentTitle: string;
+  excerpt: string;
+  score: number;
+  matchType: "hybrid" | "vector" | "keyword";
+}

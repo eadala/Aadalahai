@@ -19,4 +19,5 @@ export type {
   DocumentAnalysis,
   DocumentAnalysisClause,
   DocumentAnalysisRisk,
+  SearchResult,
 } from "./types.js";

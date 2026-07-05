@@ -97,6 +97,23 @@ export class AdalahClient {
         documentTitle: string;
         analyses: import("./types.js").DocumentAnalysis[];
       }>(`/api/v1/documents/${id}/analyses`),
+
+    getLatestAnalysis: (id: string) =>
+      this.get<{ analysis: import("./types.js").DocumentAnalysis }>(
+        `/api/v1/documents/${id}/analyses/latest`
+      ),
+  };
+
+  readonly search = {
+    query: (q: string, limit?: number) => {
+      const params = new URLSearchParams({ q });
+      if (limit) params.set("limit", String(limit));
+      return this.get<{
+        query: string;
+        count: number;
+        results: import("./types.js").SearchResult[];
+      }>(`/api/v1/search?${params.toString()}`);
+    },
   };
 
   readonly health = {

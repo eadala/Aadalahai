@@ -95,4 +95,30 @@ test.describe("Adalah Web UI", () => {
     await expect(page.getByText("نتيجة التحليل")).toBeVisible({ timeout: 30_000 });
     await expect(page.getByText("ملخص تجريبي")).toBeVisible();
   });
+
+  test("should search legal documents", async ({ page }) => {
+    const email = `search-${Date.now()}@test.com`;
+
+    await page.goto("/register");
+    await page.getByPlaceholder("محامي تجريبي").fill("مستخدم بحث");
+    await page.getByPlaceholder("lawyer@example.com").fill(email);
+    await page.getByPlaceholder("SecurePass1").fill("SecurePass1");
+    await page.getByRole("button", { name: "تسجيل" }).click();
+    await page.waitForURL(/\/chat/);
+
+    await page.getByRole("link", { name: "وثائق" }).first().click();
+    await page.getByPlaceholder("نظام العمل السعودي").fill("نظام العمل");
+    await page
+      .getByPlaceholder("المادة 77: للعامل الحق في...")
+      .fill("المادة 77: يحق للعامل الحصول على إجازة سنوية مدفوعة الأجر.");
+    await page.getByRole("button", { name: "رفع وفهرسة" }).click();
+    await expect(page.getByText("جاهزة")).toBeVisible({ timeout: 30_000 });
+
+    await page.getByRole("link", { name: "بحث" }).first().click();
+    await expect(page).toHaveURL(/\/search/);
+    await page.getByPlaceholder("مثال: إجازة سنوية").fill("إجازة");
+    await page.getByRole("button", { name: "بحث" }).click();
+    await expect(page.getByText("نظام العمل")).toBeVisible({ timeout: 30_000 });
+    await expect(page.getByText("إجازة")).toBeVisible();
+  });
 });

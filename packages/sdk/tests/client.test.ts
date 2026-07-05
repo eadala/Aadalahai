@@ -167,4 +167,29 @@ describe("AdalahClient", () => {
     const result = await client.documents.listAnalyses("d1");
     expect(result.analyses).toEqual([]);
   });
+
+  it("should search documents", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        query: "إجازة",
+        count: 1,
+        results: [
+          {
+            chunkId: "c1",
+            documentId: "d1",
+            documentTitle: "نظام",
+            excerpt: "إجازة سنوية",
+            score: 0.8,
+            matchType: "hybrid",
+          },
+        ],
+      }),
+    });
+
+    const result = await client.search.query("إجازة");
+    expect(result.count).toBe(1);
+    expect(mockFetch.mock.calls[0][0]).toContain("/api/v1/search?q=");
+  });
 });

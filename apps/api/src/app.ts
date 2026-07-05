@@ -12,6 +12,7 @@ import { documentRoutes } from "./modules/documents/document.routes.js";
 import { userRoutes } from "./modules/users/user.routes.js";
 import { analyticsRoutes } from "./modules/analytics/analytics.routes.js";
 import { onboardingRoutes } from "./modules/onboarding/onboarding.routes.js";
+import { searchRoutes } from "./modules/search/search.routes.js";
 import { AppError, formatError } from "./lib/errors.js";
 import { OpenAIError, toAppError } from "./ai/openai-errors.js";
 import { systemRoutes } from "./modules/system/system.routes.js";
@@ -134,6 +135,7 @@ export async function buildApp(env: Env) {
       await protectedRoutes.register(userRoutes, { prefix: "/api/v1/users" });
       await protectedRoutes.register(analyticsRoutes, { prefix: "/api/v1/analytics" });
       await protectedRoutes.register(onboardingRoutes, { prefix: "/api/v1/onboarding" });
+      await protectedRoutes.register(searchRoutes, { prefix: "/api/v1/search" });
     }
   );
 

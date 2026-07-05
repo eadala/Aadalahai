@@ -76,6 +76,31 @@ export class DocumentAnalysisService {
     };
   }
 
+  async getLatest(userId: string, documentId: string) {
+    const [doc] = await this.db
+      .select({ id: documents.id, title: documents.title })
+      .from(documents)
+      .where(and(eq(documents.id, documentId), eq(documents.userId, userId)))
+      .limit(1);
+
+    if (!doc) {
+      throw new AppError("DOCUMENT_NOT_FOUND", "الوثيقة غير موجودة", 404);
+    }
+
+    const [latest] = await this.db
+      .select()
+      .from(documentAnalyses)
+      .where(eq(documentAnalyses.documentId, documentId))
+      .orderBy(desc(documentAnalyses.createdAt))
+      .limit(1);
+
+    if (!latest) {
+      throw new AppError("ANALYSIS_NOT_FOUND", "لا يوجد تحليل لهذه الوثيقة", 404);
+    }
+
+    return { analysis: this.toResponse(latest, doc.title) };
+  }
+
   private parseAnalysisOutput(raw: string) {
     const jsonMatch = raw.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {

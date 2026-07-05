@@ -190,6 +190,12 @@ export async function runSmokeTests({
   }
 
   {
+    const { res, body } = await api("/api/v1/search?q=إجازة", { headers: auth });
+    if (res.ok && Array.isArray(body?.results)) pass("legal search");
+    else fail(`legal search (${res.status})`);
+  }
+
+  {
     const { res, body } = await api("/api/v1/auth/refresh", {
       method: "POST",
       body: JSON.stringify({ refreshToken }),
