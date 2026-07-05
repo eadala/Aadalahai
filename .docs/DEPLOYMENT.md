@@ -85,6 +85,8 @@ npm run prod:smoke
 | `ci.yml` | push/PR | اختبارات + build |
 | `staging.yml` | push to main | Staging deploy + 19 smoke tests |
 | `production.yml` | manual فقط | Production deploy + smoke |
+| `publish-adala-ai.yml` | manual | دفع main → `eadala/adala-ai` |
+| `adalahai-remote-smoke.yml` | manual | smoke حي على `adalahai.com` |
 
 ## Smoke Tests (19)
 

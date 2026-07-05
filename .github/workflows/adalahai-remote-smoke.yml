@@ -1,0 +1,33 @@
+name: adalahai Remote Smoke
+
+# Validates live production at https://adalahai.com after VPS cutover.
+# Run manually once DNS + deploy are complete.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "smoke" to run remote production smoke'
+        required: true
+
+jobs:
+  remote-smoke:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'smoke'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pre-flight (DNS + endpoints)
+        run: |
+          chmod +x scripts/preflight-adalahai.sh
+          ./scripts/preflight-adalahai.sh || {
+            echo "::warning::Preflight reported blockers — smoke may fail until cutover completes"
+          }
+
+      - name: Remote production smoke (19 tests)
+        run: node scripts/production-smoke.mjs
+        env:
+          API_URL: https://api.adalahai.com
+          WEB_URL: https://adalahai.com
+          PROD_WAIT_MS: 240000
