@@ -1,32 +1,42 @@
-# ترحيل الإنتاج: adala-ai → Aadalahai على adalahai.com
+# ترحيل الإنتاج: Replit → Docker على `eadala/adala-ai`
 
-> استبدال النشر الحالي (Replit + Clerk) بمكدس `Aadalahai` (Docker + JWT + Next.js)
+> نفس المستودع `adala-ai` — استبدال الكود القديم (Replit + Clerk + Vite) بالمكدس الحالي (Docker + Next.js + JWT)
+
+## المستودع الوحيد
+
+| | القيمة |
+|---|---|
+| GitHub | [`eadala/adala-ai`](https://github.com/eadala/adala-ai) |
+| النطاق | `adalahai.com` / `api.adalahai.com` |
+| الاسم | `adalah-ai` (package.json) |
+
+لا يوجد مستودع منفصل — كل التطوير والنشر من `adala-ai`.
 
 ## الخريطة
 
 ```
-قبل:  adalahai.com → Replit (eadala/adala-ai) + Clerk + Vite
-بعد:  adalahai.com → VPS Docker (eadala/Aadalahai) + Caddy + Next.js
+قبل:  adala-ai (main) → Replit + Clerk + Vite SPA
+بعد:  adala-ai (main) → Docker + Caddy + Next.js + Fastify
 ```
+
+النسخة القديمة محفوظة في tag: `legacy-replit-pre-cutover`
 
 ## المتطلبات
 
-- VPS (Hetzner أو غيره) مع Docker
-- وصول SSH + sudo
+- VPS مع Docker
 - Cloudflare DNS لـ `adalahai.com`
-- `OPENAI_API_KEY` للإنتاج
+- `OPENAI_API_KEY`
 
-## الخطوة 1 — إيقاف التعارض
+## الخطوة 1 — إيقاف Replit
 
-1. في **Replit**: أوقف/ألغِ نشر `adala-ai` أو أزل custom domain مؤقتاً
-2. في **Coolify** (إن وُجد): أوقف تطبيق `adala-ai`
-3. احتفظ بنسخة DB من النظام القديم إن لزم (اختياري)
+1. أوقف نشر Replit المرتبط بـ `adalahai.com`
+2. أزل custom domain من Replit مؤقتاً
 
-## الخطوة 2 — نشر Aadalahai
+## الخطوة 2 — نشر من adala-ai
 
 ```bash
-git clone https://github.com/eadala/Aadalahai.git
-cd Aadalahai
+git clone https://github.com/eadala/adala-ai.git
+cd adala-ai
 cp .env.prod.adalahai.example .env.prod
 # عدّل: JWT_SECRET, POSTGRES_PASSWORD, OPENAI_API_KEY
 chmod +x scripts/*.sh
@@ -39,10 +49,6 @@ chmod +x scripts/*.sh
 |---|---|---|
 | `adalahai.com` | A | IP الخادم |
 | `api.adalahai.com` | A | IP الخادم |
-| `www` | CNAME | `adalahai.com` (أو A نفس IP) |
-
-**أثناء أول شهادة HTTPS:** عطّل البروكسي (سحابة رمادية) لـ `adalahai.com` و `api.adalahai.com`  
-**بعد النجاح:** فعّل البروكسي + SSL = Full (strict)
 
 ```bash
 ./scripts/verify-dns.sh adalahai.com api.adalahai.com YOUR_SERVER_IP
@@ -52,37 +58,16 @@ chmod +x scripts/*.sh
 
 ```bash
 curl https://api.adalahai.com/health
-curl https://api.adalahai.com/ready
-curl -I https://adalahai.com/login
-
 API_URL=https://api.adalahai.com WEB_URL=https://adalahai.com npm run prod:smoke
 ```
 
-متوقع: **19/19** smoke tests.
+## ما لا يُرحّل
 
-## الخطوة 5 — أرشفة adala-ai
-
-1. أضف `README.md` في `eadala/adala-ai`: «مُستبدَل بـ Aadalahai — لا تنشر»
-2. أوقف GitHub webhooks إلى Replit/Coolify
-3. (اختياري) أعد توجيه مستودع `eadala/eadala` → `Aadalahai`
-
-## ما لا يُرحّل تلقائياً
-
-| القديم (adala-ai) | الجديد (Aadalahai) |
+| القديم | الجديد |
 |---|---|
-| مستخدمو Clerk | تسجيل JWT جديد |
-| Stripe subscriptions | يحتاج تكامل لاحق |
-| Cases module | Sprint مستقبلي |
-| Ollama محلي | OpenAI (أو mock) |
-
-## استكشاف الأخطاء
-
-| المشكلة | الحل |
-|---|---|
-| شهادة Caddy فاشلة | DNS only مؤقتاً في Cloudflare |
-| 502 على الويب | `docker compose logs web api caddy` |
-| CORS errors | تأكد `CORS_ORIGINS` في `.env.prod` |
-| www يعيد 503 | Caddy يعيد التوجيه تلقائياً بعد النشر |
+| Clerk users | JWT تسجيل جديد |
+| Stripe | لاحقاً |
+| Cases module | sprint مستقبلي |
 
 ## المراجع
 

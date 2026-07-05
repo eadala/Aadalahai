@@ -1,4 +1,8 @@
-# Adalah AI — Engineering OS
+# Adalah AI — عدالة
+
+> المستودع: [`eadala/adala-ai`](https://github.com/eadala/adala-ai) | النطاق: `adalahai.com`
+
+## Engineering OS
 
 > **عدالة** ليست مشروعًا يعتمد على prompts — بل منصة لها نظام تشغيل هندسي خاص.
 
@@ -100,7 +104,7 @@ cp .env.prod.adalahai.example .env.prod
 ./scripts/cutover-adalahai.sh
 ```
 
-يستبدل النشر القديم على `eadala/adala-ai` (Replit/Clerk).  
+يستبدل نشر Replit القديم على نفس المستودع [`eadala/adala-ai`](https://github.com/eadala/adala-ai).  
 راجع [.docs/MIGRATION-adala-ai-cutover.md](.docs/MIGRATION-adala-ai-cutover.md).
 
 ## Production (generic / VPS)

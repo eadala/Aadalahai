@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Production cutover: deploy Aadalahai stack for adalahai.com
-# Replaces legacy adala-ai (Replit/Clerk) deployment
+# Production cutover: deploy adala-ai stack for adalahai.com
+# Replaces legacy Replit deployment on the SAME repo (eadala/adala-ai)
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
@@ -31,7 +31,7 @@ if command -v dig >/dev/null 2>&1; then
 fi
 
 echo ""
-echo "=== Deploy HTTPS stack (Aadalahai) ==="
+echo "=== Deploy HTTPS stack (adala-ai) ==="
 export DOMAIN WEB_DOMAIN API_DOMAIN ACME_EMAIL NEXT_PUBLIC_API_URL CORS_ORIGINS
 "$ROOT_DIR/scripts/deploy-prod.sh" "$ENV_FILE"
 
@@ -42,7 +42,7 @@ API_URL="http://localhost:${API_PORT:-3001}" WEB_URL="http://localhost:${WEB_POR
 
 echo ""
 echo "=== Cutover checklist ==="
-echo "  1. Stop legacy Replit/Coolify deployment (eadala/adala-ai)"
+echo "  1. Stop legacy Replit deployment on adala-ai"
 echo "  2. Cloudflare: point A records to THIS server IP"
 echo "     - adalahai.com → server"
 echo "     - api.adalahai.com → server"
@@ -54,4 +54,4 @@ echo "     curl -I https://adalahai.com/login"
 echo "  5. Run remote smoke:"
 echo "     API_URL=https://api.adalahai.com WEB_URL=https://adalahai.com npm run prod:smoke"
 echo ""
-echo "Done. Legacy Clerk/Stripe app (adala-ai) can be archived after validation."
+echo "Done. Legacy Replit code preserved in tag legacy-replit-pre-cutover."

@@ -15,11 +15,11 @@
 | Smoke Tests | 19 ✅ |
 | النطاق المستهدف | `adalahai.com` |
 
-## Sprint-017 — adalahai.com Cutover ✅
+## Sprint-017 — adala-ai على adalahai.com ✅
 
-- استبدال `adala-ai` (Replit) بـ `Aadalahai` (Docker)
+- نفس المستودع `eadala/adala-ai` — استبدال كود Replit
 - `.env.prod.adalahai.example` + `cutover-adalahai.sh`
-- MIGRATION playbook + ADR-018
+- tag `legacy-replit-pre-cutover` للكود القديم
 
 ## الخطوة التالية
 

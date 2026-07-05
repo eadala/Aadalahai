@@ -1,7 +1,7 @@
 # Sprint-017 — adalahai.com Production Cutover
 
 **الفترة**: 2026-07-05  
-**الهدف**: استبدال نشر `adala-ai` وربط `adalahai.com` بـ `Aadalahai`  
+**الهدف**: نشر `eadala/adala-ai` على `adalahai.com` (نفس المستودع والاسم)  
 **الحالة**: ✅ جاهز للتنفيذ على VPS
 
 ## المهام

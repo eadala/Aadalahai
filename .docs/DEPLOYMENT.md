@@ -32,8 +32,8 @@ cp .env.prod.adalahai.example .env.prod
 ### 2. الإعداد
 
 ```bash
-git clone https://github.com/eadala/Aadalahai.git
-cd Aadalahai
+git clone https://github.com/eadala/adala-ai.git
+cd adala-ai
 cp .env.prod.example .env.prod
 ```
 
