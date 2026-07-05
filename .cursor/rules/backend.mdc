@@ -1,0 +1,51 @@
+---
+description: قواعد Backend — API والخدمات والمنطق الخلفي
+globs: ["**/api/**", "**/backend/**", "**/server/**", "**/services/**", "**/*.py", "**/*.go", "**/*.rs"]
+alwaysApply: false
+---
+
+# Backend Rules — عدالة
+
+## قبل الكتابة
+- اقرأ `.docs/API/` للـ endpoints الموجودة
+- اقرأ `.docs/Architecture.md` لمعرفة مكان الخدمة
+- اتبع قرار Think/Plan — لا اجتهادات جديدة
+
+## API Design
+- REST, versioning: `/api/v1/`
+- JSON request/response
+- تنسيق أخطاء موحد:
+  ```json
+  { "error": { "code": "...", "message": "...", "details": [] } }
+  ```
+- HTTP status codes صحيحة (200, 201, 400, 401, 403, 404, 500)
+
+## البنية
+```
+controllers/  → استقبال الطلبات فقط
+services/     → business logic
+repositories/ → data access
+models/       → schemas و types
+```
+
+## قواعد
+- Input validation على كل endpoint (لا تثق بالمدخلات)
+- لا business logic في controllers
+- Dependency injection
+- Logging structured (JSON) مع correlation ID
+- Async حيث يلزم (AI calls, file processing)
+
+## الأمان
+- Auth middleware على endpoints المحمية
+- Rate limiting
+- Parameterized queries فقط
+- لا أسرار في الكود
+
+## الاختبارات
+- Unit test لكل service method
+- Integration test لكل endpoint
+- Mock external services (LLM, storage)
+
+## التوثيق
+- كل endpoint جديد → تحديث `.docs/API/`
+- OpenAPI spec محدث

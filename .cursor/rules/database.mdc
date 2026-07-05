@@ -1,0 +1,46 @@
+---
+description: قواعد Database — migrations واستعلامات وفهرسة
+globs: ["**/migrations/**", "**/db/**", "**/database/**", "**/*.sql", "**/models/**", "**/schemas/**"]
+alwaysApply: false
+---
+
+# Database Rules — عدالة
+
+## قبل التغيير
+- اقرأ `.docs/Database/` للمخطط الحالي
+- صمم في Plan مع ER diagram
+
+## التسمية
+- جداول: `snake_case`, جمع (`users`, `messages`)
+- أعمدة: `snake_case`
+- مفاتيح: `id` UUID v4
+- timestamps: `created_at`, `updated_at`
+- soft delete: `deleted_at` (nullable)
+
+## Migrations
+- كل تغيير = migration file
+- تسمية: `YYYYMMDD_HHMMSS_description.sql`
+- لا تعديل يدوي على الإنتاج
+- Rollback migration لكل migration
+- اختبر على staging أولاً
+
+## الفهرسة
+- فهرس على كل foreign key
+- فهرس على أعمدة البحث والفلترة
+- Vector index (HNSW) لـ embeddings
+- راجع `.docs/Performance/` لأهداف الأداء
+
+## الاستعلامات
+- لا N+1 — استخدم JOINs أو eager loading
+- LIMIT على كل query يُرجع قائمة
+- Pagination: cursor-based للقوائم الكبيرة
+- EXPLAIN ANALYZE للاستعلامات البطيئة
+
+## الأمان
+- Row-level security حيث يلزم
+- لا صلاحيات superuser للتطبيق
+- تشفير الأعمدة الحساسة
+
+## التوثيق
+- كل جدول جديد → تحديث `.docs/Database/`
+- ER diagram محدث

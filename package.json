@@ -1,0 +1,28 @@
+{
+  "name": "adalah-ai",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:api",
+    "dev:api": "npm run dev -w @adalah/api",
+    "dev:web": "npm run dev -w @adalah/web",
+    "dev:all": "npm run dev:api & npm run dev:web",
+    "build": "npm run build -w @adalah/sdk && npm run build -w @adalah/api && npm run build -w @adalah/web",
+    "build:api": "npm run build -w @adalah/api",
+    "build:web": "npm run build -w @adalah/web",
+    "build:sdk": "npm run build -w @adalah/sdk",
+    "test": "npm run test -w @adalah/api && npm run test -w @adalah/sdk",
+    "test:e2e": "npm run test:e2e -w @adalah/web",
+    "lint": "npm run lint -w @adalah/api && npm run lint -w @adalah/web && npm run lint -w @adalah/sdk",
+    "db:generate": "npm run db:generate -w @adalah/api",
+    "db:migrate": "npm run db:migrate -w @adalah/api",
+    "db:studio": "npm run db:studio -w @adalah/api"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
