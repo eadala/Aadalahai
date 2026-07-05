@@ -10,6 +10,8 @@ COPY packages/sdk/package.json ./packages/sdk/
 RUN npm ci --workspace=@adalah/web --include-workspace-root
 
 FROM base AS build
+ARG NEXT_PUBLIC_API_URL=http://localhost:3001
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY package.json package-lock.json ./
 COPY apps/web/package.json ./apps/web/
 COPY packages/sdk/package.json ./packages/sdk/

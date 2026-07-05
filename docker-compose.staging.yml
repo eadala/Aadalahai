@@ -1,24 +1,32 @@
+# Staging stack — mirrors production topology for UAT before prod deploy
+# Usage:
+#   cp .env.staging.example .env.staging
+#   docker compose -f docker-compose.staging.yml --env-file .env.staging up -d --build
+#   npm run staging:smoke
+
 services:
   postgres:
     image: pgvector/pgvector:pg16
+    container_name: adalah-staging-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-adalah}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required}
-      POSTGRES_DB: ${POSTGRES_DB:-adalah}
+      POSTGRES_DB: ${POSTGRES_DB:-adalah_staging}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - staging_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adalah}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adalah} -d ${POSTGRES_DB:-adalah_staging}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   redis:
     image: redis:7-alpine
+    container_name: adalah-staging-redis
     restart: unless-stopped
     volumes:
-      - redis_data:/data
+      - staging_redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -29,11 +37,12 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+    container_name: adalah-staging-api
     restart: unless-stopped
     ports:
       - "${API_PORT:-3001}:3001"
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER:-adalah}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-adalah}
+      DATABASE_URL: postgresql://${POSTGRES_USER:-adalah}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-adalah_staging}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET required}
       JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
       JWT_REFRESH_EXPIRES_DAYS: ${JWT_REFRESH_EXPIRES_DAYS:-7}
@@ -53,10 +62,11 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
-      interval: 30s
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/ready"]
+      interval: 15s
       timeout: 5s
-      retries: 3
+      retries: 5
+      start_period: 30s
 
   web:
     build:
@@ -64,15 +74,14 @@ services:
       dockerfile: docker/Dockerfile.web
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+    container_name: adalah-staging-web
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-3000}:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
     depends_on:
       api:
         condition: service_healthy
 
 volumes:
-  postgres_data:
-  redis_data:
+  staging_postgres_data:
+  staging_redis_data:

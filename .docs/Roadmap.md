@@ -60,7 +60,8 @@
 | Citations + UX | Sprint-005 | ✅ |
 | API SDK + Deploy | Sprint-006 | ✅ |
 | OpenAI + Monitoring | Sprint-007 | ✅ |
-| Staging + Smoke tests | Sprint-008 | ⬜ مخطط |
+| Staging + Smoke tests | Sprint-008 | ✅ |
+| Production + HTTPS | Sprint-009 | ⬜ مخطط |
 
 ## كيفية تحديث هذه الوثيقة
 
