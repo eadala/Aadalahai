@@ -48,6 +48,16 @@ export async function documentRoutes(app: FastifyInstance) {
     }
   });
 
+  app.get("/:id/analyses/latest", async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const result = await analysisService.getLatest(request.user.sub, id);
+      return reply.status(200).send(result);
+    } catch (error) {
+      return handleError(error, reply);
+    }
+  });
+
   app.get("/:id/analyses", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const { id } = request.params as { id: string };

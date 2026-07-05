@@ -86,6 +86,12 @@ export default function DocumentsPage() {
           </div>
           <div className="flex gap-2">
             <Link
+              href="/search"
+              className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--bg-secondary)]"
+            >
+              بحث
+            </Link>
+            <Link
               href="/dashboard"
               className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--bg-secondary)]"
             >

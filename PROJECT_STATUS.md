@@ -1,25 +1,24 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-012 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-013 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
 | المرحلة | 2 — الذكاء القانوني |
-| السبرنت الحالي | Sprint-013 (مخطط) |
-| ADRs | 13 |
-| API Tests | 67 ✅ |
-| SDK Tests | 9 ✅ |
-| E2E Tests | 6 ✅ |
+| السبرنت الحالي | Sprint-014 (مخطط) |
+| ADRs | 14 |
+| API Tests | 71 ✅ |
+| SDK Tests | 10 ✅ |
+| E2E Tests | 7 ✅ |
 
-## Sprint-012 — Dashboard Expansion + Document Analysis ✅
+## Sprint-013 — Hybrid Legal Search ✅
 
-- جدول `document_analyses` + migration `0003`
-- `POST /api/v1/documents/:id/analyze` — تحليل عقود ومستندات
-- توسيع `GET /api/v1/analytics/me` (ملف محامٍ + نشاط أخير)
-- Web: لوحة محسّنة + زر تحليل في الوثائق
-- ADR-013
+- `GET /api/v1/search` — بحث هجين (vector + keyword)
+- `GET /documents/:id/analyses/latest` — آخر تحليل
+- Web: `/search` — واجهة البحث القانوني
+- ADR-014
 
 ## OpenAI Live
 
@@ -29,4 +28,4 @@ OPENAI_API_KEY=sk-... npm run openai:smoke
 
 ## الخطوة التالية
 
-Sprint-013: بحث تشريعات / تحسينات تحليل الوثائق
+Sprint-014: corpus تشريعات خارجي / نشر Staging→Production

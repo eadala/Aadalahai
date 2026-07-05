@@ -83,4 +83,23 @@ describe("Document Analysis API", () => {
 
     expect(response.statusCode).toBe(404);
   });
+
+  it("GET /api/v1/documents/:id/analyses/latest should return latest analysis", async () => {
+    const docId = await uploadDocument();
+
+    await app.inject({
+      method: "POST",
+      url: `/api/v1/documents/${docId}/analyze`,
+      headers: authHeaders(),
+    });
+
+    const response = await app.inject({
+      method: "GET",
+      url: `/api/v1/documents/${docId}/analyses/latest`,
+      headers: authHeaders(),
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().analysis.summary).toContain("ملخص تجريبي");
+  });
 });

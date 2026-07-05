@@ -215,6 +215,45 @@ paths:
         "409":
           description: Onboarding already completed
 
+  /api/v1/search:
+    get:
+      summary: Hybrid legal search in user documents
+      tags: [Search]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 2, maxLength: 500 }
+        - name: limit
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 20, default: 10 }
+      responses:
+        "200":
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query: { type: string }
+                  count: { type: integer }
+                  results:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/SearchResult"
+
+  /api/v1/documents/{id}/analyses/latest:
+    get:
+      summary: Latest document analysis
+      tags: [Documents]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Latest analysis
+        "404":
+          description: No analysis found
+
 components:
   securitySchemes:
     bearerAuth:
@@ -310,6 +349,16 @@ components:
           type: array
           items: { type: string }
         createdAt: { type: string, format: date-time }
+
+    SearchResult:
+      type: object
+      properties:
+        chunkId: { type: string }
+        documentId: { type: string }
+        documentTitle: { type: string }
+        excerpt: { type: string }
+        score: { type: number }
+        matchType: { type: string, enum: [hybrid, vector, keyword] }
 
     LawyerProfile:
       type: object

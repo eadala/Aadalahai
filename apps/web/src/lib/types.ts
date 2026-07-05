@@ -8,4 +8,5 @@ export type {
   LegalArticle,
   StreamEvent,
   DocumentAnalysis,
+  SearchResult,
 } from "@adalah/sdk";
