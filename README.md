@@ -1,6 +1,7 @@
 # Adalah AI — عدالة
 
-> المستودع: [`eadala/adala-ai`](https://github.com/eadala/adala-ai) | النطاق: `adalahai.com`
+> المستودع الرسمي: [`eadala/adala-ai`](https://github.com/eadala/adala-ai) | النطاق: `adalahai.com`  
+> **نقل الكود:** راجع [.docs/TRANSFER-TO-ADALA-AI.md](.docs/TRANSFER-TO-ADALA-AI.md) — `npm run publish:adala-ai`
 
 ## Engineering OS
 
