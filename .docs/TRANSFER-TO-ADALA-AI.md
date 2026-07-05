@@ -16,7 +16,39 @@ npm run verify:sync   # يؤكد عدم المزامنة
 
 ---
 
-## الطريقة 1 — سطر واحد (مالك المستودع)
+---
+
+## الطريقة 1أ — SSH (موصى به)
+
+المستودع الرسمي:
+```bash
+git@github.com:eadala/adala-ai.git
+```
+
+### 1) أنشئ Deploy Key على جهازك
+
+```bash
+ssh-keygen -t ed25519 -C "adala-ai-publish" -f ./adala-ai-deploy -N ""
+cat ./adala-ai-deploy.pub
+```
+
+### 2) أضف المفتاح في GitHub
+
+`eadala/adala-ai` → **Settings → Deploy keys → Add**  
+✅ Allow write access
+
+### 3) انشر
+
+```bash
+git clone https://github.com/eadala/Aadalahai.git
+cd Aadalahai
+export ADALA_AI_SSH_KEY="$(cat ../adala-ai-deploy)"
+npm run publish:adala-ai
+```
+
+---
+
+## الطريقة 1ب — PAT (HTTPS)
 
 ### 1) أنشئ PAT
 

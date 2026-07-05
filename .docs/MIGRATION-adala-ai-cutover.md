@@ -51,7 +51,8 @@ chmod +x scripts/publish-to-adala-ai.sh
 ## الخطوة 2 — نشر من adala-ai
 
 ```bash
-git clone https://github.com/eadala/adala-ai.git
+git clone git@github.com:eadala/adala-ai.git
+# أو: git clone https://github.com/eadala/adala-ai.git
 cd adala-ai
 cp .env.prod.adalahai.example .env.prod
 # عدّل: JWT_SECRET, POSTGRES_PASSWORD, OPENAI_API_KEY
