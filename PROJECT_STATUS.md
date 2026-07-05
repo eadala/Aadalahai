@@ -1,33 +1,27 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-014 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-015 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
 | المرحلة | 2 — الذكاء القانوني |
-| السبرنت الحالي | Sprint-015 (مخطط) |
-| ADRs | 15 |
-| API Tests | 71 ✅ |
-| SDK Tests | 10 ✅ |
+| السبرنت الحالي | Sprint-016 (مخطط) |
+| ADRs | 16 |
+| API Tests | 73 ✅ |
+| SDK Tests | 11 ✅ |
 | E2E Tests | 7 ✅ |
-| Smoke Tests | 16 ✅ (staging + prod) |
+| Smoke Tests | 18 ✅ |
 
-## Sprint-014 — Staging + Production Deploy ✅
+## Sprint-015 — Legislation Corpus ✅
 
-- نشر Sprints 011–013 على Staging و Production
-- 16 smoke test (analytics, analyze, search)
-- إصلاح production CI workflow (mock AI)
-- `wait-for-db.mjs` لموثوقية Docker startup
-- ADR-015
-
-## آخر الميزات المُنشرة
-
-- Sprint-011: Analytics + Lawyer Onboarding
-- Sprint-012: Dashboard + Document Analysis
-- Sprint-013: Hybrid Legal Search
+- جداول `legislation_sources` + `legislation_chunks`
+- Seed تشريعات سعودية (نظام العمل، إجراءات جزائية)
+- `GET /api/v1/legislation` + `search?scope=`
+- Web: نطاقات بحث (الكل / التشريعات / وثائقي)
+- ADR-016
 
 ## الخطوة التالية
 
-Sprint-015: corpus تشريعات خارجي / OpenAI على Staging
+Sprint-016: RAG من corpus التشريعات في المحادثة

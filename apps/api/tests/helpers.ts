@@ -3,6 +3,9 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 import type { Env } from "../src/config/env.js";
 import { buildApp } from "../src/app.js";
+import { createDb } from "../src/db/index.js";
+import { LegislationService } from "../src/modules/legislation/legislation.service.js";
+import { MockEmbedder } from "../src/ai/providers/mock-embedder.js";
 
 const TEST_DATABASE_URL =
   process.env.TEST_DATABASE_URL ??
@@ -32,18 +35,28 @@ export const testEnv: Env = {
 };
 
 let migrated = false;
+let legislationSeeded = false;
 
 export async function setupTestDb() {
-  if (migrated) return;
+  if (migrated && legislationSeeded) return;
 
   const client = postgres(TEST_DATABASE_URL, { max: 1 });
   await client`CREATE EXTENSION IF NOT EXISTS vector`.catch(() => {
     // pgvector may not be installed in all environments
   });
   const db = drizzle(client);
-  await migrate(db, { migrationsFolder: "./src/db/migrations" });
+  if (!migrated) {
+    await migrate(db, { migrationsFolder: "./src/db/migrations" });
+    migrated = true;
+  }
   await client.end();
-  migrated = true;
+
+  if (!legislationSeeded) {
+    const corpusDb = createDb(TEST_DATABASE_URL);
+    const legislation = new LegislationService(corpusDb, new MockEmbedder(384));
+    await legislation.seedCorpusIfEmpty();
+    legislationSeeded = true;
+  }
 }
 
 export async function cleanupTestDb() {

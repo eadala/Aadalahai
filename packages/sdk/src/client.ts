@@ -105,15 +105,24 @@ export class AdalahClient {
   };
 
   readonly search = {
-    query: (q: string, limit?: number) => {
+    query: (q: string, options?: { limit?: number; scope?: import("./types.js").SearchScope }) => {
       const params = new URLSearchParams({ q });
-      if (limit) params.set("limit", String(limit));
+      if (options?.limit) params.set("limit", String(options.limit));
+      if (options?.scope) params.set("scope", options.scope);
       return this.get<{
         query: string;
+        scope: import("./types.js").SearchScope;
         count: number;
         results: import("./types.js").SearchResult[];
       }>(`/api/v1/search?${params.toString()}`);
     },
+  };
+
+  readonly legislation = {
+    list: () =>
+      this.get<{ sources: import("./types.js").LegislationSource[]; count: number }>(
+        "/api/v1/legislation"
+      ),
   };
 
   readonly health = {

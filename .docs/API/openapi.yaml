@@ -217,7 +217,7 @@ paths:
 
   /api/v1/search:
     get:
-      summary: Hybrid legal search in user documents
+      summary: Hybrid legal search across user documents and legislation corpus
       tags: [Search]
       security: [{ bearerAuth: [] }]
       parameters:
@@ -228,6 +228,13 @@ paths:
         - name: limit
           in: query
           schema: { type: integer, minimum: 1, maximum: 20, default: 10 }
+        - name: scope
+          in: query
+          schema:
+            type: string
+            enum: [all, user, legislation]
+            default: all
+          description: Search scope — all sources, user documents only, or legislation corpus only
       responses:
         "200":
           description: Search results
@@ -237,11 +244,31 @@ paths:
                 type: object
                 properties:
                   query: { type: string }
+                  scope: { type: string, enum: [all, user, legislation] }
                   count: { type: integer }
                   results:
                     type: array
                     items:
                       $ref: "#/components/schemas/SearchResult"
+
+  /api/v1/legislation:
+    get:
+      summary: List legislation corpus sources
+      tags: [Legislation]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Legislation sources
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count: { type: integer }
+                  sources:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/LegislationSource"
 
   /api/v1/documents/{id}/analyses/latest:
     get:
@@ -354,11 +381,24 @@ components:
       type: object
       properties:
         chunkId: { type: string }
-        documentId: { type: string }
+        source: { type: string, enum: [user, legislation] }
+        documentId: { type: string, nullable: true }
+        legislationId: { type: string, nullable: true }
         documentTitle: { type: string }
+        articleRef: { type: string, nullable: true }
+        category: { type: string, nullable: true }
         excerpt: { type: string }
         score: { type: number }
         matchType: { type: string, enum: [hybrid, vector, keyword] }
+
+    LegislationSource:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        title: { type: string }
+        category: { type: string }
+        jurisdiction: { type: string }
+        createdAt: { type: string, format: date-time }
 
     LawyerProfile:
       type: object

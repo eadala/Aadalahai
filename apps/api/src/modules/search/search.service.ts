@@ -3,11 +3,18 @@ import type { Database } from "../../db/index.js";
 import type { Env } from "../../config/env.js";
 import { RAGService } from "../rag/rag.service.js";
 import type { Embedder } from "../../ai/types.js";
+import { toVectorLiteral } from "../../lib/vector.js";
+
+export type SearchScope = "all" | "user" | "legislation";
 
 export interface SearchResult {
   chunkId: string;
-  documentId: string;
+  source: "user" | "legislation";
+  documentId: string | null;
+  legislationId: string | null;
   documentTitle: string;
+  articleRef: string | null;
+  category: string | null;
   excerpt: string;
   score: number;
   matchType: "hybrid" | "vector" | "keyword";
@@ -18,25 +25,48 @@ export class SearchService {
 
   constructor(
     private readonly db: Database,
-    embedder: Embedder,
+    private readonly embedder: Embedder,
     private readonly env: Env
   ) {
     this.rag = new RAGService(db, embedder, env);
   }
 
-  async search(userId: string, query: string, limit = 10): Promise<SearchResult[]> {
+  async search(
+    userId: string,
+    query: string,
+    limit = 10,
+    scope: SearchScope = "all"
+  ): Promise<SearchResult[]> {
+    const tasks: Promise<SearchResult[]>[] = [];
+
+    if (scope === "all" || scope === "user") {
+      tasks.push(this.searchUserDocuments(userId, query, limit));
+    }
+    if (scope === "all" || scope === "legislation") {
+      tasks.push(this.searchLegislationCorpus(query, limit));
+    }
+
+    const merged = (await Promise.all(tasks)).flat();
+    return merged.sort((a, b) => b.score - a.score).slice(0, limit);
+  }
+
+  private async searchUserDocuments(userId: string, query: string, limit: number) {
     const [vectorChunks, keywordChunks] = await Promise.all([
       this.rag.retrieve(userId, query),
-      this.keywordSearch(userId, query, limit),
+      this.keywordSearchUser(userId, query, limit),
     ]);
 
     const merged = new Map<string, SearchResult>();
 
     for (const chunk of vectorChunks) {
-      merged.set(chunk.chunkId, {
+      merged.set(`user:${chunk.chunkId}`, {
         chunkId: chunk.chunkId,
+        source: "user",
         documentId: chunk.documentId,
+        legislationId: null,
         documentTitle: chunk.documentTitle,
+        articleRef: null,
+        category: null,
         excerpt: this.buildExcerpt(chunk.content, query),
         score: chunk.similarity * 0.7,
         matchType: "vector",
@@ -44,15 +74,20 @@ export class SearchService {
     }
 
     for (const chunk of keywordChunks) {
-      const existing = merged.get(chunk.chunkId);
+      const key = `user:${chunk.chunkId}`;
+      const existing = merged.get(key);
       if (existing) {
         existing.score = Math.min(1, existing.score + 0.3);
         existing.matchType = "hybrid";
       } else {
-        merged.set(chunk.chunkId, {
+        merged.set(key, {
           chunkId: chunk.chunkId,
+          source: "user",
           documentId: chunk.documentId,
+          legislationId: null,
           documentTitle: chunk.documentTitle,
+          articleRef: null,
+          category: null,
           excerpt: this.buildExcerpt(chunk.content, query),
           score: 0.3,
           matchType: "keyword",
@@ -60,12 +95,103 @@ export class SearchService {
       }
     }
 
-    return Array.from(merged.values())
-      .sort((a, b) => b.score - a.score)
-      .slice(0, limit);
+    return Array.from(merged.values());
   }
 
-  private async keywordSearch(userId: string, query: string, limit: number) {
+  private async searchLegislationCorpus(query: string, limit: number) {
+    const queryEmbedding = await this.embedder.embed(query);
+    const vectorLiteral = toVectorLiteral(queryEmbedding);
+    const pattern = `%${query.replace(/[%_]/g, "")}%`;
+
+    const [vectorRows, keywordRows] = await Promise.all([
+      this.db.execute<{
+        chunk_id: string;
+        legislation_id: string;
+        title: string;
+        category: string;
+        article_ref: string;
+        content: string;
+        similarity: number;
+      }>(sql`
+        SELECT
+          lc.id AS chunk_id,
+          ls.id AS legislation_id,
+          ls.title,
+          ls.category,
+          lc.article_ref,
+          lc.content,
+          1 - (lc.embedding <=> ${vectorLiteral}::vector) AS similarity
+        FROM legislation_chunks lc
+        INNER JOIN legislation_sources ls ON ls.id = lc.legislation_id
+        ORDER BY lc.embedding <=> ${vectorLiteral}::vector
+        LIMIT ${limit}
+      `),
+      this.db.execute<{
+        chunk_id: string;
+        legislation_id: string;
+        title: string;
+        category: string;
+        article_ref: string;
+        content: string;
+      }>(sql`
+        SELECT
+          lc.id AS chunk_id,
+          ls.id AS legislation_id,
+          ls.title,
+          ls.category,
+          lc.article_ref,
+          lc.content
+        FROM legislation_chunks lc
+        INNER JOIN legislation_sources ls ON ls.id = lc.legislation_id
+        WHERE lc.content ILIKE ${pattern}
+        ORDER BY ls.title
+        LIMIT ${limit}
+      `),
+    ]);
+
+    const merged = new Map<string, SearchResult>();
+
+    for (const row of vectorRows) {
+      merged.set(`leg:${row.chunk_id}`, {
+        chunkId: row.chunk_id,
+        source: "legislation",
+        documentId: null,
+        legislationId: row.legislation_id,
+        documentTitle: row.title,
+        articleRef: row.article_ref,
+        category: row.category,
+        excerpt: this.buildExcerpt(row.content, query),
+        score: Number(row.similarity) * 0.7,
+        matchType: "vector",
+      });
+    }
+
+    for (const row of keywordRows) {
+      const key = `leg:${row.chunk_id}`;
+      const existing = merged.get(key);
+      if (existing) {
+        existing.score = Math.min(1, existing.score + 0.3);
+        existing.matchType = "hybrid";
+      } else {
+        merged.set(key, {
+          chunkId: row.chunk_id,
+          source: "legislation",
+          documentId: null,
+          legislationId: row.legislation_id,
+          documentTitle: row.title,
+          articleRef: row.article_ref,
+          category: row.category,
+          excerpt: this.buildExcerpt(row.content, query),
+          score: 0.3,
+          matchType: "keyword",
+        });
+      }
+    }
+
+    return Array.from(merged.values());
+  }
+
+  private async keywordSearchUser(userId: string, query: string, limit: number) {
     const pattern = `%${query.replace(/[%_]/g, "")}%`;
 
     const results = await this.db.execute<{

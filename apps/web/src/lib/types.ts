@@ -9,4 +9,6 @@ export type {
   StreamEvent,
   DocumentAnalysis,
   SearchResult,
+  LegislationSource,
+  SearchScope,
 } from "@adalah/sdk";

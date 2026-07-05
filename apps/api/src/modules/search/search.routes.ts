@@ -10,9 +10,10 @@ export async function searchRoutes(app: FastifyInstance) {
   app.get("/", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const input = searchQuerySchema.parse(request.query);
-      const results = await service.search(request.user.sub, input.q, input.limit);
+      const results = await service.search(request.user.sub, input.q, input.limit, input.scope);
       return reply.status(200).send({
         query: input.q,
+        scope: input.scope,
         count: results.length,
         results,
       });

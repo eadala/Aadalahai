@@ -29,6 +29,7 @@
     "lint": "npm run lint -w @adalah/api && npm run lint -w @adalah/web && npm run lint -w @adalah/sdk",
     "db:generate": "npm run db:generate -w @adalah/api",
     "db:migrate": "npm run db:migrate -w @adalah/api",
+    "db:seed": "npm run db:seed -w @adalah/api",
     "db:studio": "npm run db:studio -w @adalah/api"
   },
   "engines": {

@@ -20,4 +20,6 @@ export type {
   DocumentAnalysisClause,
   DocumentAnalysisRisk,
   SearchResult,
+  LegislationSource,
+  SearchScope,
 } from "./types.js";
