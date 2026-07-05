@@ -1,32 +1,36 @@
 # خارطة الطريق — عدالة
 
-> آخر تحديث: Sprint-001 | الحالة: **مرحلة التأسيس**
+> آخر تحديث: Sprint-006 | الحالة: **مرحلة النواة مكتملة**
 
 ## المراحل
 
-### المرحلة 0 — Engineering OS (الحالية) ✅ جارية
+### المرحلة 0 — Engineering OS ✅
 
 - [x] هيكل المجلدات (`.docs/`, `.ai/`, `.tasks/`, `.cursor/`)
 - [x] وثائق الرؤية والمعمارية
-- [x] نظام ADR
+- [x] نظام ADR (7 وثائق)
 - [x] فريق الوكلاء الافتراضي
 - [x] سير عمل Think → Plan → Build → Review
 - [x] قواعد Cursor
-- [ ] CI/CD pipeline أساسي
-- [ ] بيئة تطوير محلية موحدة
+- [x] CI/CD pipeline (test + e2e + build)
+- [x] بيئة تطوير محلية موحدة
 
-### المرحلة 1 — النواة (Core Platform)
+### المرحلة 1 — النواة (Core Platform) ✅
 
-- [ ] مصادقة المستخدمين (Auth)
-- [ ] إدارة الجلسات والمحادثات
-- [ ] RAG pipeline للوثائق القانونية
-- [ ] واجهة محادثة أساسية (عربي/إنجليزي)
-- [ ] API REST أساسي
+- [x] مصادقة المستخدمين (Auth)
+- [x] إدارة الجلسات والمحادثات
+- [x] RAG pipeline للوثائق القانونية
+- [x] واجهة محادثة أساسية (عربي RTL)
+- [x] API REST أساسي
+- [x] استشهاد بالمصادر (citations)
+- [x] User profile
+- [x] API SDK (`@adalah/sdk`)
+- [x] نشر إنتاجي (Docker)
 
 ### المرحلة 2 — الذكاء القانوني
 
+- [ ] OpenAI integration حقيقي
 - [ ] Fine-tuning / prompt engineering للسياق القانوني العربي
-- [ ] استشهاد بالمصادر (citations)
 - [ ] تحليل عقود ومستندات
 - [ ] بحث في التشريعات والسوابق
 
@@ -44,14 +48,17 @@
 - [ ] مراقبة وتحليلات متقدمة
 - [ ] 100+ وثيقة هندسية مكتملة
 
-## المعالم القادمة
+## المعالم
 
-| المعلم | السبرنت المستهدف | الحالة |
+| المعلم | السبرنت | الحالة |
 |---|---|---|
-| Engineering OS كامل | Sprint-001 | 🟡 جاري |
-| Auth + User model | Sprint-002 | ⬜ مخطط |
-| RAG MVP | Sprint-003 | ⬜ مخطط |
-| Chat UI v1 | Sprint-004 | ⬜ مخطط |
+| Engineering OS | Sprint-001 | ✅ |
+| Auth + User model | Sprint-002 | ✅ |
+| RAG MVP | Sprint-003 | ✅ |
+| Chat UI v1 | Sprint-004 | ✅ |
+| Citations + UX | Sprint-005 | ✅ |
+| API SDK + Deploy | Sprint-006 | ✅ |
+| OpenAI + Monitoring | Sprint-007 | ⬜ مخطط |
 
 ## كيفية تحديث هذه الوثيقة
 

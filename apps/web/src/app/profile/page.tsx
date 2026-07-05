@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { clearAuth, getStoredUser, isAuthenticated, saveAuth } from "@/lib/auth";
-import type { ApiError, User } from "@/lib/types";
+import type { User } from "@adalah/sdk";
+import { AdalahApiError } from "@adalah/sdk";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -46,8 +47,11 @@ export default function ProfilePage() {
       if (token && refresh) saveAuth(token, refresh, res.user);
       setMessage("تم تحديث الملف الشخصي");
     } catch (err) {
-      const apiErr = err as ApiError;
-      setError(apiErr?.error?.message ?? "فشل التحديث");
+      if (err instanceof AdalahApiError) {
+        setError(err.message);
+      } else {
+        setError("فشل التحديث");
+      }
     } finally {
       setSaving(false);
     }

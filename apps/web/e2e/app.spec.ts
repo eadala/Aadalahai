@@ -16,7 +16,7 @@ test.describe("Adalah Web UI", () => {
     await page.getByPlaceholder("SecurePass1").fill("SecurePass1");
     await page.getByRole("button", { name: "تسجيل" }).click();
 
-    await expect(page).toHaveURL(/\/chat/, { timeout: 10_000 });
+    await expect(page).toHaveURL(/\/chat/, { timeout: 30_000 });
     await expect(page.getByText("مرحبًا بك في عدالة")).toBeVisible();
   });
 

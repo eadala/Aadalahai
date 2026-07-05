@@ -5,7 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { isAuthenticated } from "@/lib/auth";
-import type { ApiError, Document } from "@/lib/types";
+import type { Document } from "@/lib/types";
+import { AdalahApiError } from "@adalah/sdk";
 
 export default function DocumentsPage() {
   const router = useRouter();
@@ -38,8 +39,11 @@ export default function DocumentsPage() {
       setTitle("");
       setContent("");
     } catch (err) {
-      const apiErr = err as ApiError;
-      setError(apiErr?.error?.message ?? "فشل رفع الوثيقة");
+      if (err instanceof AdalahApiError) {
+        setError(err.message);
+      } else {
+        setError("فشل رفع الوثيقة");
+      }
     } finally {
       setUploading(false);
     }

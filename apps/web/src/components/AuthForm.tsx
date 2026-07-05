@@ -4,8 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
-import { saveAuth } from "@/lib/auth";
-import type { ApiError } from "@/lib/types";
+import { AdalahApiError } from "@adalah/sdk";
 
 interface AuthFormProps {
   mode: "login" | "register";
@@ -30,11 +29,13 @@ export function AuthForm({ mode }: AuthFormProps) {
           ? await api.login(email, password)
           : await api.register(email, password, name);
 
-      saveAuth(result.tokens.accessToken, result.tokens.refreshToken, result.user);
       router.push("/chat");
     } catch (err) {
-      const apiErr = err as ApiError;
-      setError(apiErr?.error?.message ?? "حدث خطأ، حاول مرة أخرى");
+      if (err instanceof AdalahApiError) {
+        setError(err.message);
+      } else {
+        setError("حدث خطأ، حاول مرة أخرى");
+      }
     } finally {
       setLoading(false);
     }

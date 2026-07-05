@@ -4,14 +4,16 @@
 
 | # | الميزة | السبرنت | تاريخ الإكمال |
 |---|---|---|---|
+| F-001 | Engineering OS | Sprint-001 | 2026-07-05 |
 | F-002 | Auth (register, login, refresh, logout, me) | Sprint-002 | 2026-07-05 |
+| F-003 | User profile | Sprint-005 | 2026-07-05 |
 | F-004 | Chat sessions + messages | Sprint-003 | 2026-07-05 |
 | F-005 | RAG pipeline MVP | Sprint-003 | 2026-07-05 |
-| F-007 | Document upload + indexing | Sprint-003 | 2026-07-05 |
 | F-006 | Chat UI (web) | Sprint-004 | 2026-07-05 |
-| F-009 | Arabic RTL UI | Sprint-004 | 2026-07-05 |
-| F-003 | User profile | Sprint-005 | 2026-07-05 |
+| F-007 | Document upload + indexing | Sprint-003 | 2026-07-05 |
 | F-008 | Legal citations | Sprint-005 | 2026-07-05 |
+| F-009 | Arabic RTL UI | Sprint-004 | 2026-07-05 |
+| F-010 | API SDK | Sprint-006 | 2026-07-05 |
 
 ## جاري 🟡
 
@@ -23,10 +25,8 @@
 
 | # | الميزة | السبرنت المستهدف | الأولوية |
 |---|---|---|---|
-| F-001 | Engineering OS | Sprint-001 | ✅ مكتمل |
-| F-003 | User profile | Sprint-005 | ✅ مكتمل |
-| F-008 | Legal citations | Sprint-005 | ✅ مكتمل |
-| F-010 | API SDK | Sprint-006 | متوسط |
+| F-011 | OpenAI integration | Sprint-007 | عالي |
+| F-012 | Production monitoring | Sprint-007 | متوسط |
 
 ## مرفوض ❌
 

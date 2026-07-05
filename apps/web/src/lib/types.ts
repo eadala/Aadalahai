@@ -1,70 +1,10 @@
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: string;
-  createdAt: string;
-}
-
-export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: string;
-}
-
-export interface LegalArticle {
-  number: string;
-  label: string;
-  text: string;
-}
-
-export interface Citation {
-  index: number;
-  documentId: string;
-  documentTitle: string;
-  chunkContent: string;
-  excerpt: string;
-  similarity: number;
-  confidence: "high" | "medium" | "low";
-  articles: LegalArticle[];
-}
-
-export interface Message {
-  id: string;
-  role: "user" | "assistant" | "system";
-  content: string;
-  citations: Citation[];
-  createdAt: string;
-}
-
-export interface ChatSession {
-  id: string;
-  title: string;
-  createdAt: string;
-  updatedAt: string;
-  messages?: Message[];
-}
-
-export interface Document {
-  id: string;
-  title: string;
-  status: string;
-  contentPreview: string;
-  chunkCount?: number;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ApiError {
-  error: {
-    code: string;
-    message: string;
-    details: Array<{ field: string; issue: string }>;
-  };
-}
-
-export type StreamEvent =
-  | { type: "user_message"; data: Message }
-  | { type: "chunk"; data: { content: string } }
-  | { type: "done"; data: { message: Message; citations: Citation[] } }
-  | { type: "error"; message: string };
+export type {
+  User,
+  AuthTokens,
+  Message,
+  ChatSession,
+  Document,
+  Citation,
+  LegalArticle,
+  StreamEvent,
+} from "@adalah/sdk";

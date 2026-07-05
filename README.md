@@ -4,8 +4,8 @@
 
 ## البدء السريع
 
-1. اقرأ [.docs/Vision.md](../.docs/Vision.md) لفهم الرؤية
-2. راجع [.docs/Architecture.md](../.docs/Architecture.md) للبنية
+1. اقرأ [.docs/Vision.md](.docs/Vision.md) لفهم الرؤية
+2. راجع [.docs/Architecture.md](.docs/Architecture.md) للبنية
 3. افتح Cursor — سيقرأ `.cursor/rules/` تلقائيًا
 4. لأي ميزة جديدة: اتبع [.ai/Workflows/think-plan-build-review.md](.ai/Workflows/think-plan-build-review.md)
 
@@ -16,28 +16,18 @@ adalah-ai/
 ├── apps/
 │   ├── api/        # Fastify backend
 │   └── web/        # Next.js frontend (RTL Arabic)
-├── .docs/          # Knowledge Base — 100+ وثيقة مستهدفة
+├── packages/
+│   └── sdk/        # @adalah/sdk TypeScript client
+├── .docs/          # Knowledge Base
 │   ├── Vision.md
 │   ├── Roadmap.md
 │   ├── Architecture.md
 │   ├── ADR/
-│   ├── API/
-│   ├── Database/
-│   ├── Security/
-│   └── Performance/
+│   └── API/
 ├── .ai/            # العمليات والوكلاء
-│   ├── Rules/
-│   ├── Agents/
-│   ├── Skills/
-│   ├── Playbooks/
-│   ├── Prompts/
-│   └── Workflows/
 ├── .tasks/         # العمل الجاري
-│   ├── Sprint-001.md
-│   ├── Bugs.md
-│   └── Features.md
 ├── .cursor/        # قواعد Cursor
-│   └── rules/
+├── docker/         # Dockerfiles للإنتاج
 └── PROJECT_STATUS.md
 ```
 
@@ -46,19 +36,6 @@ adalah-ai/
 ```
 طلب ميزة → Think → Plan → Build → Review → دمج
 ```
-
-## الفريق الافتراضي
-
-| الوكيل | الملف |
-|---|---|
-| Chief Architect | [.ai/Agents/chief-architect.md](.ai/Agents/chief-architect.md) |
-| Backend Engineer | [.ai/Agents/backend-engineer.md](.ai/Agents/backend-engineer.md) |
-| Frontend Engineer | [.ai/Agents/frontend-engineer.md](.ai/Agents/frontend-engineer.md) |
-| Database Engineer | [.ai/Agents/database-engineer.md](.ai/Agents/database-engineer.md) |
-| Security Engineer | [.ai/Agents/security-engineer.md](.ai/Agents/security-engineer.md) |
-| QA Engineer | [.ai/Agents/qa-engineer.md](.ai/Agents/qa-engineer.md) |
-| DevOps Engineer | [.ai/Agents/devops-engineer.md](.ai/Agents/devops-engineer.md) |
-| Documentation Engineer | [.ai/Agents/documentation-engineer.md](.ai/Agents/documentation-engineer.md) |
 
 ## الحالة
 
@@ -73,9 +50,41 @@ npm install
 npm run db:migrate
 npm run dev:api           # API على http://localhost:3001
 npm run dev:web           # Web على http://localhost:3000
-npm test                  # 30 اختبار API
-npm run test:e2e          # 3 اختبار E2E
+npm test                  # 40 API + 6 SDK
+npm run test:e2e          # 4 E2E
+npm run build             # sdk → api → web
 ```
+
+## النشر الإنتاجي
+
+```bash
+cp .env.prod.example .env.prod
+# عدّل JWT_SECRET و POSTGRES_PASSWORD
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+```
+
+الخدمات:
+- Web: `http://localhost:3000`
+- API: `http://localhost:3001`
+
+## SDK
+
+```typescript
+import { AdalahClient } from "@adalah/sdk";
+
+const client = new AdalahClient({
+  baseUrl: process.env.ADALAH_API_URL ?? "http://localhost:3001",
+});
+
+const { tokens, user } = await client.auth.login("user@example.com", "SecurePass1");
+const session = await client.chat.createSession("استشارة قانونية");
+
+for await (const event of client.chat.streamMessage(session.session.id, "ما هي حقوق العامل؟")) {
+  if (event.type === "token") process.stdout.write(event.content);
+}
+```
+
+راجع [packages/sdk/README.md](packages/sdk/README.md) و [`.docs/API/openapi.yaml`](.docs/API/openapi.yaml).
 
 ## الترخيص
 
