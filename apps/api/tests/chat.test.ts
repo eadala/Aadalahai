@@ -240,6 +240,28 @@ describe("Chat & RAG API", () => {
       expect(response.body).toContain("data:");
       expect(response.body).toContain("[DONE]");
     });
+
+    it("should cite legislation corpus without user documents", async () => {
+      const sessionRes = await app.inject({
+        method: "POST",
+        url: "/api/v1/chat/sessions",
+        headers: authHeaders(),
+        payload: { title: "استشارة تشريعية" },
+      });
+      const sessionId = sessionRes.json().session.id;
+
+      const response = await app.inject({
+        method: "POST",
+        url: `/api/v1/chat/sessions/${sessionId}/messages`,
+        headers: authHeaders(),
+        payload: { content: "ما حق المحامي في الدفاع الجزائي؟", stream: false },
+      });
+
+      expect(response.statusCode).toBe(200);
+      const citations = response.json().assistantMessage.citations;
+      expect(citations.length).toBeGreaterThan(0);
+      expect(citations.some((c: { source: string }) => c.source === "legislation")).toBe(true);
+    });
   });
 
   describe("Authorization", () => {

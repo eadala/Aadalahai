@@ -52,13 +52,13 @@ export class SearchService {
 
   private async searchUserDocuments(userId: string, query: string, limit: number) {
     const [vectorChunks, keywordChunks] = await Promise.all([
-      this.rag.retrieve(userId, query),
+      this.rag.retrieveUserOnly(userId, query),
       this.keywordSearchUser(userId, query, limit),
     ]);
 
     const merged = new Map<string, SearchResult>();
 
-    for (const chunk of vectorChunks) {
+    for (const chunk of vectorChunks.filter((c) => c.source === "user")) {
       merged.set(`user:${chunk.chunkId}`, {
         chunkId: chunk.chunkId,
         source: "user",

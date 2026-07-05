@@ -1,27 +1,26 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-015 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-016 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
 | المرحلة | 2 — الذكاء القانوني |
-| السبرنت الحالي | Sprint-016 (مخطط) |
-| ADRs | 16 |
-| API Tests | 73 ✅ |
+| السبرنت الحالي | Sprint-017 (مخطط) |
+| ADRs | 17 |
+| API Tests | 75 ✅ |
 | SDK Tests | 11 ✅ |
 | E2E Tests | 7 ✅ |
-| Smoke Tests | 18 ✅ |
+| Smoke Tests | 19 ✅ |
 
-## Sprint-015 — Legislation Corpus ✅
+## Sprint-016 — Legislation RAG in Chat ✅
 
-- جداول `legislation_sources` + `legislation_chunks`
-- Seed تشريعات سعودية (نظام العمل، إجراءات جزائية)
-- `GET /api/v1/legislation` + `search?scope=`
-- Web: نطاقات بحث (الكل / التشريعات / وثائقي)
-- ADR-016
+- RAG يدمج وثائق المستخدم + corpus التشريعات
+- استشهادات موسّعة (`source`, `legislationId`, `articleRef`)
+- محادثة تعمل بدون رفع وثائق (تشريعات مدمجة)
+- ADR-017
 
 ## الخطوة التالية
 
-Sprint-016: RAG من corpus التشريعات في المحادثة
+Sprint-017: توسيع corpus التشريعات

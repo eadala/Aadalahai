@@ -70,6 +70,7 @@
 | Hybrid Legal Search | Sprint-013 | ✅ |
 | Staging + Prod Deploy | Sprint-014 | ✅ |
 | Legislation Corpus | Sprint-015 | ✅ |
+| Legislation RAG in Chat | Sprint-016 | ✅ |
 
 ## كيفية تحديث هذه الوثيقة
 

@@ -67,7 +67,7 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```bash
 cp .env.staging.example .env.staging
 npm run staging:up      # يبني ويشغّل Docker stack
-npm run staging:smoke   # 18 اختبار تكامل
+npm run staging:smoke   # 19 اختبار تكامل
 npm run staging:down    # إيقاف
 ```
 

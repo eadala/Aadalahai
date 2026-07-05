@@ -13,9 +13,9 @@ describe("legal-assistant prompts", () => {
     expect(LEGAL_ASSISTANT_BASE_PROMPT).toContain("[1]");
   });
 
-  it("should handle missing documents", () => {
+  it("should handle missing context", () => {
     const prompt = buildLegalSystemPrompt({ context: "", citations: [] });
-    expect(prompt).toContain("لا توجد وثائق قانونية");
+    expect(prompt).toContain("لا توجد مصادر قانونية");
     expect(prompt).not.toContain("## السياق القانوني\n\n");
   });
 
@@ -25,8 +25,11 @@ describe("legal-assistant prompts", () => {
       citations: [
         {
           index: 1,
+          source: "user",
           documentId: "doc-1",
+          legislationId: null,
           documentTitle: "نظام العمل",
+          articleRef: null,
           chunkContent: "المادة 77",
           excerpt: "المادة 77",
           similarity: 0.9,

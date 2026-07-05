@@ -4,7 +4,6 @@ import {
   extractLegalArticles,
   extractExcerpt,
   similarityToConfidence,
-  MIN_CITATION_SIMILARITY,
 } from "../../lib/citation-parser.js";
 
 export function buildEnhancedCitations(
@@ -14,11 +13,24 @@ export function buildEnhancedCitations(
   return chunks
     .filter((c) => c.similarity >= 0.1)
     .map((c, i) => {
-      const articles = extractLegalArticles(c.content);
+      const articles =
+        c.source === "legislation" && c.articleRef
+          ? [
+              {
+                number: c.articleRef.replace(/\D/g, "") || String(i + 1),
+                label: c.articleRef,
+                text: c.content.slice(0, 200),
+              },
+            ]
+          : extractLegalArticles(c.content);
+
       return {
         index: i + 1,
+        source: c.source,
         documentId: c.documentId,
+        legislationId: c.legislationId,
         documentTitle: c.documentTitle,
+        articleRef: c.articleRef,
         chunkContent: c.content.slice(0, 300),
         excerpt: extractExcerpt(c.content, query),
         similarity: c.similarity,
@@ -33,7 +45,9 @@ export function formatCitationReferences(citations: Citation[]): string {
   return citations
     .map((c) => {
       const articles = c.articles.map((a) => a.label).join("، ");
-      return `[${c.index}] ${c.documentTitle}${articles ? ` — ${articles}` : ""}`;
+      const ref = c.articleRef && !articles.includes(c.articleRef) ? ` — ${c.articleRef}` : "";
+      const type = c.source === "legislation" ? " (تشريع)" : "";
+      return `[${c.index}] ${c.documentTitle}${ref}${articles ? ` — ${articles}` : ""}${type}`;
     })
     .join("\n");
 }
