@@ -15,6 +15,13 @@
       "when": 1783240494820,
       "tag": "0001_glamorous_hellion",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1783242000000,
+      "tag": "0002_lawyer_profiles",
+      "breakpoints": true
     }
   ]
 }

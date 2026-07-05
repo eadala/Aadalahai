@@ -20,6 +20,8 @@
 | F-015 | Production deploy + HTTPS | Sprint-009 | 2026-07-05 |
 | F-014 | Prompt engineering عربي | Sprint-010 | 2026-07-05 |
 | F-016 | OpenAI live validation | Sprint-010 | 2026-07-05 |
+| F-017 | Analytics dashboard | Sprint-011 | 2026-07-05 |
+| F-018 | Lawyer onboarding | Sprint-011 | 2026-07-05 |
 
 ## جاري 🟡
 
@@ -31,7 +33,7 @@
 
 | # | الميزة | السبرنت المستهدف | الأولوية |
 |---|---|---|---|
-| F-017 | Analytics dashboard | Sprint-011 | متوسط |
+| — | — | — | — |
 
 ## مرفوض ❌
 

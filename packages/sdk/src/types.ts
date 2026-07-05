@@ -94,3 +94,38 @@ export interface AdalahClientOptions {
   storage?: TokenStorage;
   fetch?: typeof fetch;
 }
+
+export interface UserAnalytics {
+  totalSessions: number;
+  totalMessages: number;
+  totalDocuments: number;
+  messagesThisWeek: number;
+  documentsReady: number;
+  role: string;
+  isLawyer: boolean;
+  onboardingCompleted: boolean;
+  memberSince: string;
+  lastActivityAt: string | null;
+}
+
+export interface LawyerProfile {
+  licenseNumber: string;
+  specialization: string;
+  barAssociation: string;
+  phone: string | null;
+  completedAt: string;
+}
+
+export interface OnboardingStatus {
+  role: string;
+  isLawyer: boolean;
+  onboardingCompleted: boolean;
+  profile: LawyerProfile | null;
+}
+
+export interface LawyerOnboardingInput {
+  licenseNumber: string;
+  specialization: string;
+  barAssociation: string;
+  phone?: string;
+}

@@ -140,6 +140,52 @@ paths:
       tags: [Documents]
       security: [{ bearerAuth: [] }]
 
+  /api/v1/analytics/me:
+    get:
+      summary: User activity analytics
+      tags: [Analytics]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: User stats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analytics:
+                    $ref: "#/components/schemas/UserAnalytics"
+
+  /api/v1/onboarding/status:
+    get:
+      summary: Lawyer onboarding status
+      tags: [Onboarding]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Onboarding status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OnboardingStatus"
+
+  /api/v1/onboarding/lawyer:
+    post:
+      summary: Complete lawyer onboarding
+      tags: [Onboarding]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LawyerOnboardingInput"
+      responses:
+        "201":
+          description: User upgraded to lawyer
+        "409":
+          description: Onboarding already completed
+
 components:
   securitySchemes:
     bearerAuth:
@@ -173,3 +219,46 @@ components:
             code: { type: string }
             message: { type: string }
             details: { type: array }
+
+    UserAnalytics:
+      type: object
+      properties:
+        totalSessions: { type: integer }
+        totalMessages: { type: integer }
+        totalDocuments: { type: integer }
+        messagesThisWeek: { type: integer }
+        documentsReady: { type: integer }
+        role: { type: string }
+        isLawyer: { type: boolean }
+        onboardingCompleted: { type: boolean }
+        memberSince: { type: string, format: date-time }
+        lastActivityAt: { type: string, format: date-time, nullable: true }
+
+    LawyerProfile:
+      type: object
+      properties:
+        licenseNumber: { type: string }
+        specialization: { type: string }
+        barAssociation: { type: string }
+        phone: { type: string, nullable: true }
+        completedAt: { type: string, format: date-time }
+
+    OnboardingStatus:
+      type: object
+      properties:
+        role: { type: string }
+        isLawyer: { type: boolean }
+        onboardingCompleted: { type: boolean }
+        profile:
+          oneOf:
+            - $ref: "#/components/schemas/LawyerProfile"
+            - type: "null"
+
+    LawyerOnboardingInput:
+      type: object
+      required: [licenseNumber, specialization, barAssociation]
+      properties:
+        licenseNumber: { type: string, minLength: 3, maxLength: 64 }
+        specialization: { type: string, minLength: 2, maxLength: 128 }
+        barAssociation: { type: string, minLength: 2, maxLength: 128 }
+        phone: { type: string, minLength: 8, maxLength: 32 }

@@ -12,4 +12,8 @@ export type {
   TokenStorage,
   AdalahClientOptions,
   ApiErrorBody,
+  UserAnalytics,
+  OnboardingStatus,
+  LawyerProfile,
+  LawyerOnboardingInput,
 } from "./types.js";

@@ -115,6 +115,17 @@ export const documentChunks = pgTable(
   (table) => [index("document_chunks_document_id_idx").on(table.documentId)]
 );
 
+export const lawyerProfiles = pgTable("lawyer_profiles", {
+  userId: uuid("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  licenseNumber: varchar("license_number", { length: 64 }).notNull(),
+  specialization: varchar("specialization", { length: 128 }).notNull(),
+  barAssociation: varchar("bar_association", { length: 128 }).notNull(),
+  phone: varchar("phone", { length: 32 }),
+  completedAt: timestamp("completed_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export interface LegalArticle {
   number: string;
   label: string;
@@ -132,10 +143,14 @@ export interface Citation {
   articles: LegalArticle[];
 }
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ one, many }) => ({
   refreshTokens: many(refreshTokens),
   chatSessions: many(chatSessions),
   documents: many(documents),
+  lawyerProfile: one(lawyerProfiles, {
+    fields: [users.id],
+    references: [lawyerProfiles.userId],
+  }),
 }));
 
 export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
@@ -175,6 +190,13 @@ export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   }),
 }));
 
+export const lawyerProfilesRelations = relations(lawyerProfiles, ({ one }) => ({
+  user: one(users, {
+    fields: [lawyerProfiles.userId],
+    references: [users.id],
+  }),
+}));
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type RefreshToken = typeof refreshTokens.$inferSelect;
@@ -182,3 +204,4 @@ export type ChatSession = typeof chatSessions.$inferSelect;
 export type Message = typeof messages.$inferSelect;
 export type Document = typeof documents.$inferSelect;
 export type DocumentChunk = typeof documentChunks.$inferSelect;
+export type LawyerProfile = typeof lawyerProfiles.$inferSelect;

@@ -51,7 +51,7 @@ export async function cleanupTestDb() {
   await client`
     TRUNCATE TABLE
       document_chunks, documents, messages, chat_sessions,
-      refresh_tokens, users
+      lawyer_profiles, refresh_tokens, users
     RESTART IDENTITY CASCADE
   `;
   await client.end();
