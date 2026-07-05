@@ -1,0 +1,41 @@
+name: Staging
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  staging-smoke:
+    runs-on: ubuntu-latest
+    # Run after CI on main; skip if only docs changed on manual dispatch still runs
+    if: github.event_name == 'workflow_dispatch' || github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create staging env file
+        run: |
+          cp .env.staging.example .env.staging
+          sed -i "s/staging-change-me-strong-password/staging-ci-$(openssl rand -hex 8)/" .env.staging
+          sed -i "s/staging-jwt-secret-minimum-32-characters-long-change-me/ci-staging-jwt-$(openssl rand -hex 16)/" .env.staging
+
+      - name: Build and start staging stack
+        run: |
+          docker compose -f docker-compose.staging.yml --env-file .env.staging up -d --build --wait
+        timeout-minutes: 15
+
+      - name: Run staging smoke tests
+        run: node scripts/staging-smoke.mjs
+        env:
+          API_URL: http://localhost:3001
+          WEB_URL: http://localhost:3000
+          STAGING_WAIT_MS: 180000
+
+      - name: Show service logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.staging.yml --env-file .env.staging logs --no-color
+
+      - name: Tear down staging stack
+        if: always()
+        run: docker compose -f docker-compose.staging.yml --env-file .env.staging down -v

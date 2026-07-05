@@ -2,48 +2,61 @@
 
 ## البيئات
 
-| البيئة | الغرض | URL |
-|---|---|---|
-| dev | تطوير محلي | localhost |
-| staging | اختبار قبل الإنتاج | TBD |
-| prod | الإنتاج | TBD |
+| البيئة | الغرض | URL | Compose |
+|---|---|---|---|
+| dev | تطوير محلي | localhost:3000/3001 | `docker-compose.yml` |
+| staging | UAT قبل الإنتاج | localhost (أو VPS) | `docker-compose.staging.yml` |
+| prod | الإنتاج | TBD | `docker-compose.prod.yml` |
+
+## الترتيب الصحيح
+
+```
+1. مراجعة PRs → دمج في main
+2. CI أخضر (test + e2e + build)
+3. Staging deploy + smoke tests
+4. UAT يدوي على Staging
+5. Production deploy (بعد موافقة)
+```
 
 ## خطوات النشر
 
 ### 1. Pre-deploy
 
-- [ ] كل الاختبارات خضراء
-- [ ] مراجعة أمنية مكتملة
-- [ ] وثائق محدثة
+- [ ] كل الاختبارات خضراء على `main`
+- [ ] PRs مدمجة (لا فروع تجريبية)
 - [ ] Migration tested على staging
 
 ### 2. Deploy to Staging
 
-- [ ] Deploy via CI/CD
-- [ ] Smoke tests
-- [ ] Performance check ضد SLOs
+```bash
+cp .env.staging.example .env.staging
+npm run staging:up
+npm run staging:smoke
+```
+
+- [ ] Smoke tests تمر (12 اختبار)
+- [ ] UAT يدوي: تسجيل، محادثة، وثائق، ملف شخصي
+- [ ] `/ready` و `/metrics` يعملان
 
 ### 3. Deploy to Production
 
-- [ ] موافقة (approval)
-- [ ] Deploy via CI/CD
-- [ ] Smoke tests
-- [ ] مراقبة لمدة 30 دقيقة
+- [ ] موافقة بعد UAT
+- [ ] `docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build`
+- [ ] Smoke tests على prod URL
+- [ ] مراقبة 30 دقيقة
 
 ### 4. Post-deploy
 
 - [ ] تحديث PROJECT_STATUS
-- [ ] إشعار الفريق
 - [ ] مراقبة metrics
 
 ## Rollback
 
-إن فشل النشر:
-1. Rollback تلقائي via CI/CD
+1. `docker compose down` + restore previous images
 2. سجّل في Bugs.md
-3. حلل السبب قبل إعادة المحاولة
+3. حلل السبب
 
 ## المراجع
 
+- [ADR-009](../.docs/ADR/009-staging-deployment.md)
 - [.ai/Agents/devops-engineer.md](../Agents/devops-engineer.md)
-- [.docs/Performance/](../../.docs/Performance/)

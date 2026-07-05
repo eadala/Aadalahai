@@ -1,43 +1,42 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-007 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-008 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
-| المرحلة | 2 — الذكاء القانوني (بداية) |
-| السبرنت الحالي | Sprint-008 (مخطط) |
-| ADRs | 8 |
+| المرحلة | 2 — Staging جاهز |
+| الفرع الرئيسي | `main` (Sprint-001→007 مدمج) |
+| السبرنت الحالي | Sprint-009 (مخطط) |
+| ADRs | 9 |
 | API Tests | 52 ✅ |
-| SDK Tests | 6 ✅ |
+| SDK Tests | 7 ✅ |
 | E2E Tests | 4 ✅ |
-| API Endpoints | 18 |
-| Web Pages | 6 |
+| Staging Smoke | 12 ✅ |
 
-## Sprint-007 — OpenAI + Monitoring ✅
+## Sprint-008 — Staging Deployment ✅
 
-- OpenAI client مشترك (timeout, retry, error mapping)
-- `/ready` + `/metrics` endpoints
-- AI instrumentation (LLM, embedder, RAG latency)
-- 12 اختبار جديد (factory, OpenAI, system)
-- ADR-008
+- `docker-compose.staging.yml` + `.env.staging.example`
+- `scripts/staging-smoke.mjs` — 12 اختبار تكامل
+- GitHub Actions staging workflow (push to main)
+- ADR-009
 
 ## التشغيل
 
 ```bash
-# تطوير (mock)
-docker compose up -d && npm install && npm run db:migrate
-npm run dev:api && npm run dev:web
+# تطوير
+docker compose up -d && npm run db:migrate && npm run dev:api
 
-# OpenAI
-LLM_PROVIDER=openai EMBEDDER_PROVIDER=openai OPENAI_API_KEY=sk-... npm run dev:api
+# Staging
+cp .env.staging.example .env.staging
+npm run staging:up && npm run staging:smoke
 
-# اختبارات
-npm test           # 52 API + 6 SDK
-npm run test:e2e   # 4 E2E
+# إنتاج (لاحقًا)
+cp .env.prod.example .env.prod
+docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```
 
 ## الخطوة التالية
 
-Sprint-008: Staging deploy + OpenAI smoke tests
+Sprint-009: Production deployment + domain + HTTPS

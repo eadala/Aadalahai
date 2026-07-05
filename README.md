@@ -59,13 +59,19 @@ npm run build             # sdk → api → web
 
 ```bash
 cp .env.prod.example .env.prod
-# عدّل JWT_SECRET و POSTGRES_PASSWORD
 docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```
 
-الخدمات:
-- Web: `http://localhost:3000`
-- API: `http://localhost:3001`
+## Staging (UAT)
+
+```bash
+cp .env.staging.example .env.staging
+npm run staging:up      # يبني ويشغّل Docker stack
+npm run staging:smoke   # 12 اختبار تكامل
+npm run staging:down    # إيقاف
+```
+
+يفعَّل تلقائيًا عبر GitHub Actions عند كل push إلى `main`.
 
 ## SDK
 
