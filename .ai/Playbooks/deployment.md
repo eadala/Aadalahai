@@ -40,10 +40,19 @@ npm run staging:smoke
 
 ### 3. Deploy to Production
 
-- [ ] موافقة بعد UAT
-- [ ] `docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build`
-- [ ] Smoke tests على prod URL
+```bash
+cp .env.prod.example .env.prod
+# عيّن DOMAIN, JWT_SECRET, POSTGRES_PASSWORD, OPENAI_API_KEY
+./scripts/deploy-prod.sh
+npm run prod:smoke
+```
+
+- [ ] DNS يشير إلى VPS (A records)
+- [ ] HTTPS يعمل (Caddy + Let's Encrypt)
+- [ ] Smoke tests تمر
 - [ ] مراقبة 30 دقيقة
+
+راجع [.docs/DEPLOYMENT.md](../../.docs/DEPLOYMENT.md).
 
 ### 4. Post-deploy
 

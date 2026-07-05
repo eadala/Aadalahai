@@ -1,13 +1,15 @@
+# Production base stack — use with docker-compose.prod.https.yml for HTTPS
 services:
   postgres:
     image: pgvector/pgvector:pg16
+    container_name: adalah-prod-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-adalah}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD required}
       POSTGRES_DB: ${POSTGRES_DB:-adalah}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - prod_postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-adalah}"]
       interval: 10s
@@ -16,9 +18,10 @@ services:
 
   redis:
     image: redis:7-alpine
+    container_name: adalah-prod-redis
     restart: unless-stopped
     volumes:
-      - redis_data:/data
+      - prod_redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -29,6 +32,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile.api
+    container_name: adalah-prod-api
     restart: unless-stopped
     ports:
       - "${API_PORT:-3001}:3001"
@@ -37,6 +41,7 @@ services:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET required}
       JWT_ACCESS_EXPIRES_IN: ${JWT_ACCESS_EXPIRES_IN:-15m}
       JWT_REFRESH_EXPIRES_DAYS: ${JWT_REFRESH_EXPIRES_DAYS:-7}
+      CORS_ORIGINS: ${CORS_ORIGINS:-}
       LLM_PROVIDER: ${LLM_PROVIDER:-mock}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
@@ -53,10 +58,11 @@ services:
       postgres:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3001/health"]
-      interval: 30s
+      test: ["CMD", "wget", "-qO-", "http://localhost:3001/ready"]
+      interval: 15s
       timeout: 5s
-      retries: 3
+      retries: 5
+      start_period: 30s
 
   web:
     build:
@@ -64,15 +70,14 @@ services:
       dockerfile: docker/Dockerfile.web
       args:
         NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
+    container_name: adalah-prod-web
     restart: unless-stopped
     ports:
       - "${WEB_PORT:-3000}:3000"
-    environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3001}
     depends_on:
       api:
         condition: service_healthy
 
 volumes:
-  postgres_data:
-  redis_data:
+  prod_postgres_data:
+  prod_redis_data:

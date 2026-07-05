@@ -1,42 +1,42 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-008 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-009 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
-| المرحلة | 2 — Staging جاهز |
-| الفرع الرئيسي | `main` (Sprint-001→007 مدمج) |
-| السبرنت الحالي | Sprint-009 (مخطط) |
-| ADRs | 9 |
-| API Tests | 52 ✅ |
+| المرحلة | 2 — جاهز للإنتاج |
+| الفرع الرئيسي | `main` |
+| السبرنت الحالي | Sprint-010 (مخطط) |
+| ADRs | 10 |
+| API Tests | 54 ✅ |
 | SDK Tests | 7 ✅ |
 | E2E Tests | 4 ✅ |
-| Staging Smoke | 12 ✅ |
+| Smoke Tests | 13 (staging + production) |
 
-## Sprint-008 — Staging Deployment ✅
+## Sprint-009 — Production + HTTPS ✅
 
-- `docker-compose.staging.yml` + `.env.staging.example`
-- `scripts/staging-smoke.mjs` — 12 اختبار تكامل
-- GitHub Actions staging workflow (push to main)
-- ADR-009
+- Caddy reverse proxy + Let's Encrypt
+- `scripts/deploy-prod.sh` (direct / https modes)
+- `scripts/production-smoke.mjs`
+- CORS_ORIGINS + trustProxy
+- `.docs/DEPLOYMENT.md` + ADR-010
 
-## التشغيل
+## النشر
 
 ```bash
-# تطوير
-docker compose up -d && npm run db:migrate && npm run dev:api
-
 # Staging
-cp .env.staging.example .env.staging
 npm run staging:up && npm run staging:smoke
 
-# إنتاج (لاحقًا)
+# Production (VPS + domain)
 cp .env.prod.example .env.prod
-docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+./scripts/deploy-prod.sh
+npm run prod:smoke
 ```
+
+راجع [.docs/DEPLOYMENT.md](.docs/DEPLOYMENT.md) للتفاصيل.
 
 ## الخطوة التالية
 
-Sprint-009: Production deployment + domain + HTTPS
+Sprint-010: Prompt engineering عربي + OpenAI live validation
