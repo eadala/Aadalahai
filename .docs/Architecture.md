@@ -92,3 +92,5 @@
 | ADR | القرار |
 |---|---|
 | [001](./ADR/001-engineering-os.md) | اعتماد Engineering OS كأساس للتطوير |
+| [002](./ADR/002-tech-stack.md) | Node.js + TypeScript + Fastify + Drizzle |
+| [003](./ADR/003-auth-strategy.md) | JWT + Refresh Token Rotation |

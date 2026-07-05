@@ -4,20 +4,20 @@
 
 | # | الميزة | السبرنت | تاريخ الإكمال |
 |---|---|---|---|
-| — | — | — | — |
+| F-002 | Auth (register, login, refresh, logout, me) | Sprint-002 | 2026-07-05 |
 
 ## جاري 🟡
 
 | # | الميزة | السبرنت | المسؤول | الحالة |
 |---|---|---|---|---|
-| F-001 | Engineering OS | Sprint-001 | Chief Architect | 🟡 جاري |
+| — | — | — | — | — |
 
 ## مخطط ⬜
 
 | # | الميزة | السبرنت المستهدف | الأولوية |
 |---|---|---|---|
-| F-002 | Auth (register, login) | Sprint-002 | عالي |
-| F-003 | User profile | Sprint-002 | متوسط |
+| F-001 | Engineering OS | Sprint-001 | ✅ مكتمل |
+| F-003 | User profile | Sprint-003 | متوسط |
 | F-004 | Chat session management | Sprint-003 | عالي |
 | F-005 | RAG pipeline MVP | Sprint-003 | عالي |
 | F-006 | Chat UI (web) | Sprint-004 | عالي |

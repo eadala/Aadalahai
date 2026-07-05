@@ -1,46 +1,65 @@
-# Database — قاعدة البيانات
+# Database — عدالة
 
 ## التقنية
 
-- **PostgreSQL 16+** كقاعدة رئيسية
-- **pgvector** للبحث الدلالي
-- **Redis** للـ cache والجلسات
+- **PostgreSQL 16+**
+- **Drizzle ORM** للـ migrations والاستعلامات
+- **Redis** للـ cache (Sprint لاحق)
 
-## المبادئ
+## الجداول
 
-1. **كل تغيير = migration** — لا تعديل يدوي على الإنتاج
-2. **تسمية**: `snake_case` للجداول والأعمدة
-3. **مفاتيح**: `id` UUID كمفتاح أساسي
-4. **تدقيق**: `created_at`, `updated_at` في كل جدول
-5. **Soft delete**: `deleted_at` حيث يلزم
+### `users`
 
-## الجداول المخططة
-
-| الجدول | الغرض | الحالة |
+| العمود | النوع | الوصف |
 |---|---|---|
-| `users` | حسابات المستخدمين | ⬜ مخطط |
-| `sessions` | جلسات المحادثة | ⬜ مخطط |
-| `messages` | رسائل المحادثة | ⬜ مخطط |
-| `documents` | وثائق قانونية مرفوعة | ⬜ مخطط |
-| `document_chunks` | مقاطع مفهرسة للـ RAG | ⬜ مخطط |
-| `embeddings` | متجهات المقاطع | ⬜ مخطط |
+| `id` | UUID PK | معرف فريد |
+| `email` | VARCHAR(255) UNIQUE | البريد الإلكتروني |
+| `password_hash` | VARCHAR(255) | argon2id hash |
+| `name` | VARCHAR(255) | الاسم |
+| `role` | ENUM | `user` \| `lawyer` \| `admin` |
+| `created_at` | TIMESTAMPTZ | تاريخ الإنشاء |
+| `updated_at` | TIMESTAMPTZ | تاريخ التحديث |
 
-## مخطط ER (مبدئي)
+### `refresh_tokens`
+
+| العمود | النوع | الوصف |
+|---|---|---|
+| `id` | UUID PK | معرف فريد |
+| `user_id` | UUID FK → users | المستخدم |
+| `token_hash` | VARCHAR(64) UNIQUE | SHA-256 hash |
+| `expires_at` | TIMESTAMPTZ | تاريخ الانتهاء |
+| `revoked_at` | TIMESTAMPTZ NULL | تاريخ الإلغاء |
+| `created_at` | TIMESTAMPTZ | تاريخ الإنشاء |
+
+## مخطط ER
 
 ```
-users ──< sessions ──< messages
-users ──< documents ──< document_chunks ──< embeddings
+users ──< refresh_tokens
 ```
 
-## الفهرسة
+## Migrations
 
-- `messages(session_id, created_at)` — استرجاع سريع لتاريخ المحادثة
-- `embeddings` — فهرس vector (HNSW أو IVFFlat)
-- `documents(user_id, status)` — قائمة وثائق المستخدم
+```
+apps/api/src/db/migrations/
+  0000_bright_may_parker.sql   ← users + refresh_tokens
+```
 
-## كيفية إضافة جدول
+**تشغيل:**
+```bash
+npm run db:migrate
+```
 
-1. صمم في **Think** مع Database Engineer
-2. وثّق هنا + أنشئ migration
-3. راجع مع Security Engineer (صلاحيات، تشفير)
-4. اختبر الأداء مع Performance targets
+**إنشاء migration جديد:**
+```bash
+npm run db:generate
+```
+
+## الجداول المخططة (لاحقًا)
+
+| الجدول | الغرض | السبرنت |
+|---|---|---|
+| `sessions` | جلسات المحادثة | Sprint-003 |
+| `messages` | رسائل المحادثة | Sprint-003 |
+| `documents` | وثائق قانونية | Sprint-004 |
+| `document_chunks` | مقاطع RAG | Sprint-004 |
+| `embeddings` | متجهات | Sprint-004 |

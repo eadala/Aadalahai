@@ -61,6 +61,17 @@ adalah-ai/
 
 راجع [PROJECT_STATUS.md](PROJECT_STATUS.md) للحالة الحالية.
 
+## التشغيل المحلي
+
+```bash
+cp .env.example .env
+docker compose up -d      # Postgres + Redis
+npm install
+npm run db:migrate
+npm run dev               # API على http://localhost:3001
+npm test                  # 15 اختبار
+```
+
 ## الترخيص
 
 TBD

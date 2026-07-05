@@ -1,0 +1,20 @@
+{
+  "name": "adalah-ai",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @adalah/api",
+    "build": "npm run build -w @adalah/api",
+    "test": "npm run test -w @adalah/api",
+    "lint": "npm run lint -w @adalah/api",
+    "db:generate": "npm run db:generate -w @adalah/api",
+    "db:migrate": "npm run db:migrate -w @adalah/api",
+    "db:studio": "npm run db:studio -w @adalah/api"
+  },
+  "engines": {
+    "node": ">=22.0.0"
+  }
+}
