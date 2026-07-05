@@ -8,6 +8,7 @@ import { createAIProviders, type AIProviders } from "./ai/factory.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
 import { chatRoutes } from "./modules/chat/chat.routes.js";
 import { documentRoutes } from "./modules/documents/document.routes.js";
+import { userRoutes } from "./modules/users/user.routes.js";
 import { AppError, formatError } from "./lib/errors.js";
 
 declare module "fastify" {
@@ -89,6 +90,7 @@ export async function buildApp(env: Env) {
       protectedRoutes.addHook("preHandler", app.authenticate);
       await protectedRoutes.register(chatRoutes, { prefix: "/api/v1/chat" });
       await protectedRoutes.register(documentRoutes, { prefix: "/api/v1/documents" });
+      await protectedRoutes.register(userRoutes, { prefix: "/api/v1/users" });
     }
   );
 

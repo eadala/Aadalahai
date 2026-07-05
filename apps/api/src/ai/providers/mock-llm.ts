@@ -10,7 +10,8 @@ export class MockLLMProvider implements LLMProvider {
 
   async complete(messages: LLMMessage[], options?: LLMOptions): Promise<string> {
     const lastUser = [...messages].reverse().find((m) => m.role === "user");
-    const contextNote = options?.systemPrompt?.includes("السياق") ? " بناءً على الوثائق المتاحة" : "";
+    const hasContext = options?.systemPrompt?.includes("[1]");
+    const contextNote = hasContext ? " بناءً على [1]" : "";
     return `إجابة تجريبية${contextNote}: ${lastUser?.content ?? "لا يوجد سؤال"}. هذه المعلومات استشارية وليست استشارة قانونية رسمية.`;
   }
 

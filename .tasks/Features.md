@@ -10,6 +10,8 @@
 | F-007 | Document upload + indexing | Sprint-003 | 2026-07-05 |
 | F-006 | Chat UI (web) | Sprint-004 | 2026-07-05 |
 | F-009 | Arabic RTL UI | Sprint-004 | 2026-07-05 |
+| F-003 | User profile | Sprint-005 | 2026-07-05 |
+| F-008 | Legal citations | Sprint-005 | 2026-07-05 |
 
 ## جاري 🟡
 
@@ -22,8 +24,8 @@
 | # | الميزة | السبرنت المستهدف | الأولوية |
 |---|---|---|---|
 | F-001 | Engineering OS | Sprint-001 | ✅ مكتمل |
-| F-003 | User profile | Sprint-005 | متوسط |
-| F-008 | Legal citations | Sprint-005 | عالي |
+| F-003 | User profile | Sprint-005 | ✅ مكتمل |
+| F-008 | Legal citations | Sprint-005 | ✅ مكتمل |
 | F-010 | API SDK | Sprint-006 | متوسط |
 
 ## مرفوض ❌

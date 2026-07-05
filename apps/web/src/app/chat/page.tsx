@@ -3,11 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
-import { clearAuth, getStoredUser, isAuthenticated } from "@/lib/auth";
+import { getStoredUser, isAuthenticated } from "@/lib/auth";
 import type { ChatSession, Message, User } from "@/lib/types";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
+import { ChatSkeleton } from "@/components/ChatSkeleton";
+import { SourceWarning } from "@/components/SourceWarning";
+import Link from "next/link";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -18,6 +21,8 @@ export default function ChatPage() {
   const [streamingMessage, setStreamingMessage] = useState<Message | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [hasDocuments, setHasDocuments] = useState(true);
+  const [loadingSession, setLoadingSession] = useState(false);
 
   const loadSessions = useCallback(async () => {
     const { sessions: list } = await api.listSessions();
@@ -45,6 +50,8 @@ export default function ChatPage() {
         if (list.length > 0) loadSession(list[0].id);
       })
       .finally(() => setLoading(false));
+
+    api.listDocuments().then((res) => setHasDocuments(res.documents.length > 0));
   }, [router, loadSessions, loadSession]);
 
   async function handleNewSession() {
@@ -55,7 +62,9 @@ export default function ChatPage() {
   }
 
   async function handleSelectSession(id: string) {
+    setLoadingSession(true);
     await loadSession(id);
+    setLoadingSession(false);
   }
 
   async function handleDeleteSession(id: string) {
@@ -139,11 +148,6 @@ export default function ChatPage() {
     }
   }
 
-  function handleLogout() {
-    clearAuth();
-    router.push("/login");
-  }
-
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -170,15 +174,21 @@ export default function ChatPage() {
               <p className="text-sm text-[var(--text-secondary)]">{user.name}</p>
             )}
           </div>
-          <button
-            onClick={handleLogout}
-            className="text-sm text-[var(--text-secondary)] hover:text-red-400"
+          <Link
+            href="/profile"
+            className="text-sm text-[var(--text-secondary)] hover:text-[var(--accent)]"
           >
-            خروج
-          </button>
+            حسابي
+          </Link>
         </header>
 
+        {!hasDocuments && <SourceWarning />}
+
         <div className="flex-1 space-y-4 overflow-y-auto p-6">
+          {loadingSession ? (
+            <ChatSkeleton />
+          ) : (
+            <>
           {messages.length === 0 && !streamingMessage && (
             <div className="flex h-full flex-col items-center justify-center text-center">
               <h3 className="text-2xl font-bold">مرحبًا بك في عدالة</h3>
@@ -195,6 +205,8 @@ export default function ChatPage() {
 
           {streamingMessage && (
             <ChatMessage message={streamingMessage} isStreaming />
+          )}
+            </>
           )}
         </div>
 

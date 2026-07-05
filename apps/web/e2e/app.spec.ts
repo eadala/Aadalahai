@@ -30,8 +30,23 @@ test.describe("Adalah Web UI", () => {
     await page.getByRole("button", { name: "تسجيل" }).click();
     await page.waitForURL(/\/chat/);
 
-    await page.getByRole("link", { name: "وثائق" }).click();
+    await page.getByRole("link", { name: "وثائق" }).first().click();
     await expect(page).toHaveURL(/\/documents/);
     await expect(page.getByText("الوثائق القانونية")).toBeVisible();
+  });
+
+  test("should navigate to profile page", async ({ page }) => {
+    const email = `profile-${Date.now()}@test.com`;
+
+    await page.goto("/register");
+    await page.getByPlaceholder("محامي تجريبي").fill("مستخدم ملف");
+    await page.getByPlaceholder("lawyer@example.com").fill(email);
+    await page.getByPlaceholder("SecurePass1").fill("SecurePass1");
+    await page.getByRole("button", { name: "تسجيل" }).click();
+    await page.waitForURL(/\/chat/);
+
+    await page.getByRole("link", { name: "حسابي" }).first().click();
+    await expect(page).toHaveURL(/\/profile/);
+    await expect(page.getByText("الملف الشخصي")).toBeVisible();
   });
 });

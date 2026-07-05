@@ -136,7 +136,7 @@ describe("Chat & RAG API", () => {
   });
 
   describe("Chat Messages (non-streaming)", () => {
-    it("should send message and get RAG-powered response", async () => {
+    it("should send message with enhanced citations", async () => {
       await app.inject({
         method: "POST",
         url: "/api/v1/documents",
@@ -161,9 +161,34 @@ describe("Chat & RAG API", () => {
 
       expect(response.statusCode).toBe(200);
       const body = response.json();
-      expect(body.userMessage.role).toBe("user");
-      expect(body.assistantMessage.role).toBe("assistant");
-      expect(body.assistantMessage.content.length).toBeGreaterThan(0);
+      expect(body.assistantMessage.citations.length).toBeGreaterThan(0);
+      expect(body.assistantMessage.citations[0].index).toBe(1);
+      expect(body.assistantMessage.citations[0].confidence).toBeDefined();
+    });
+
+    it("should auto-update session title from first message", async () => {
+      const sessionRes = await app.inject({
+        method: "POST",
+        url: "/api/v1/chat/sessions",
+        headers: authHeaders(),
+        payload: {},
+      });
+      const sessionId = sessionRes.json().session.id;
+
+      await app.inject({
+        method: "POST",
+        url: `/api/v1/chat/sessions/${sessionId}/messages`,
+        headers: authHeaders(),
+        payload: { content: "سؤال عن المادة 77", stream: false },
+      });
+
+      const getRes = await app.inject({
+        method: "GET",
+        url: `/api/v1/chat/sessions/${sessionId}`,
+        headers: authHeaders(),
+      });
+
+      expect(getRes.json().session.title).toContain("المادة 77");
     });
 
     it("should return session history with messages", async () => {

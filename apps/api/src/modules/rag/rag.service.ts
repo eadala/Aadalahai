@@ -4,14 +4,11 @@ import type { Embedder } from "../../ai/types.js";
 import type { Citation } from "../../db/schema.js";
 import { toVectorLiteral } from "../../lib/vector.js";
 import type { Env } from "../../config/env.js";
+import { buildEnhancedCitations } from "./citation.service.js";
 
-export interface RetrievedChunk {
-  chunkId: string;
-  documentId: string;
-  documentTitle: string;
-  content: string;
-  similarity: number;
-}
+import type { RetrievedChunk } from "./types.js";
+
+export type { RetrievedChunk };
 
 export class RAGService {
   constructor(
@@ -59,17 +56,12 @@ export class RAGService {
     return chunks
       .map(
         (c, i) =>
-          `[مصدر ${i + 1}: ${c.documentTitle}]\n${c.content}`
+          `[${i + 1}] ${c.documentTitle}\n${c.content}`
       )
       .join("\n\n");
   }
 
-  toCitations(chunks: RetrievedChunk[]): Citation[] {
-    return chunks.map((c) => ({
-      documentId: c.documentId,
-      documentTitle: c.documentTitle,
-      chunkContent: c.content.slice(0, 200),
-      similarity: c.similarity,
-    }));
+  toCitations(chunks: RetrievedChunk[], query?: string): Citation[] {
+    return buildEnhancedCitations(chunks, query);
   }
 }

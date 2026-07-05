@@ -96,3 +96,4 @@
 | [003](./ADR/003-auth-strategy.md) | JWT + Refresh Token Rotation |
 | [004](./ADR/004-llm-integration.md) | LLM pluggable + SSE streaming |
 | [005](./ADR/005-rag-architecture.md) | pgvector RAG في PostgreSQL |
+| [006](./ADR/006-legal-citations.md) | تنسيق الاستشهادات القانونية |

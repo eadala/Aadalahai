@@ -12,11 +12,21 @@ export interface AuthTokens {
   expiresIn: string;
 }
 
+export interface LegalArticle {
+  number: string;
+  label: string;
+  text: string;
+}
+
 export interface Citation {
+  index: number;
   documentId: string;
   documentTitle: string;
   chunkContent: string;
+  excerpt: string;
   similarity: number;
+  confidence: "high" | "medium" | "low";
+  articles: LegalArticle[];
 }
 
 export interface Message {

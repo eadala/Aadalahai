@@ -94,6 +94,17 @@ class ApiClient {
     return this.request<{ user: User }>("/api/v1/auth/me");
   }
 
+  async getProfile() {
+    return this.request<{ user: User }>("/api/v1/users/me");
+  }
+
+  async updateProfile(name: string) {
+    return this.request<{ user: User }>("/api/v1/users/me", {
+      method: "PATCH",
+      body: JSON.stringify({ name }),
+    });
+  }
+
   async createSession(title?: string) {
     return this.request<{ session: ChatSession }>("/api/v1/chat/sessions", {
       method: "POST",

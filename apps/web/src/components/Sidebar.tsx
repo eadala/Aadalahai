@@ -32,6 +32,12 @@ export function Sidebar({ sessions, activeId, onSelect, onNew, onDelete }: Sideb
         >
           وثائق
         </Link>
+        <Link
+          href="/profile"
+          className="rounded-lg border border-[var(--border)] px-3 py-2 text-sm hover:bg-[var(--bg-tertiary)]"
+        >
+          حسابي
+        </Link>
       </div>
 
       <nav className="flex-1 overflow-y-auto p-2">
