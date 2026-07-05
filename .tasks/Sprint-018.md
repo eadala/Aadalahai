@@ -11,7 +11,7 @@
 | Replit | 🔴 متوقف (المستخدم) |
 | `adalahai.com` | ⚠️ قد يعرض cache قديم عبر Cloudflare |
 | `api.adalahai.com` | ❌ بدون DNS |
-| VPS deploy | ⏳ يحتاج `VPS_HOST` + SSH key |
+| VPS deploy | ⏳ `167.233.100.149` — Coolify على :8000، يحتاج SSH key |
 
 ## المهام
 
@@ -65,8 +65,8 @@ cd /opt/adala-ai
 
 | السجل | النوع | القيمة |
 |---|---|---|
-| `adalahai.com` | A | IP الخادم |
-| `api.adalahai.com` | A | IP الخادم |
+| `adalahai.com` | A | `167.233.100.149` |
+| `api.adalahai.com` | A | `167.233.100.149` |
 | `www` | CNAME → apex أو A | نفس IP |
 
 نصيحة: عطّل البروكسي (grey cloud) أثناء إصدار شهادة Caddy الأولى، ثم فعّل Full (strict).
