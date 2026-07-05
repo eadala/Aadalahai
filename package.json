@@ -22,6 +22,8 @@
     "staging:smoke": "node scripts/staging-smoke.mjs",
     "staging:logs": "docker compose -f docker-compose.staging.yml --env-file .env.staging logs -f",
     "prod:up": "./scripts/deploy-prod.sh",
+    "prod:cutover": "./scripts/cutover-adalahai.sh",
+    "verify:dns": "./scripts/verify-dns.sh",
     "prod:down": "docker compose -f docker-compose.prod.yml --env-file .env.prod down",
     "prod:smoke": "node scripts/production-smoke.mjs",
     "prod:logs": "docker compose -f docker-compose.prod.yml --env-file .env.prod logs -f",

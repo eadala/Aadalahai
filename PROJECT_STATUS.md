@@ -1,26 +1,26 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-016 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-017 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
 | المرحلة | 2 — الذكاء القانوني |
-| السبرنت الحالي | Sprint-017 (مخطط) |
-| ADRs | 17 |
+| السبرنت الحالي | Sprint-018 (نشر VPS) |
+| ADRs | 18 |
 | API Tests | 75 ✅ |
 | SDK Tests | 11 ✅ |
 | E2E Tests | 7 ✅ |
 | Smoke Tests | 19 ✅ |
+| النطاق المستهدف | `adalahai.com` |
 
-## Sprint-016 — Legislation RAG in Chat ✅
+## Sprint-017 — adalahai.com Cutover ✅
 
-- RAG يدمج وثائق المستخدم + corpus التشريعات
-- استشهادات موسّعة (`source`, `legislationId`, `articleRef`)
-- محادثة تعمل بدون رفع وثائق (تشريعات مدمجة)
-- ADR-017
+- استبدال `adala-ai` (Replit) بـ `Aadalahai` (Docker)
+- `.env.prod.adalahai.example` + `cutover-adalahai.sh`
+- MIGRATION playbook + ADR-018
 
 ## الخطوة التالية
 
-Sprint-017: توسيع corpus التشريعات
+Sprint-018: تنفيذ النشر على VPS + smoke على https://adalahai.com

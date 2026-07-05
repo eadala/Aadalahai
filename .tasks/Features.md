@@ -28,6 +28,7 @@
 | F-022 | Staging + Production deploy validation | Sprint-014 | 2026-07-05 |
 | F-023 | Legislation corpus + scoped search | Sprint-015 | 2026-07-05 |
 | F-024 | Legislation RAG in chat | Sprint-016 | 2026-07-05 |
+| F-025 | adalahai.com production cutover | Sprint-017 | 2026-07-05 |
 
 ## جاري 🟡
 
