@@ -90,6 +90,18 @@ export class AdalahClient {
     check: () => this.get<{ status: string; service: string }>("/health", false),
   };
 
+  readonly system = {
+    health: () => this.get<{ status: string; service: string; timestamp: string }>("/health", false),
+    ready: () =>
+      this.get<{
+        status: string;
+        service: string;
+        checks: Record<string, { status: string; latencyMs?: number; provider?: string }>;
+        timestamp: string;
+      }>("/ready", false),
+    metrics: () => this.getText("/metrics", false),
+  };
+
   setTokens(tokens: AuthTokens) {
     this.storage?.setTokens(tokens.accessToken, tokens.refreshToken);
   }
@@ -139,6 +151,21 @@ export class AdalahClient {
 
   private get<T>(path: string, auth = true) {
     return this.request<T>(path, { method: "GET" }, auth);
+  }
+
+  private async getText(path: string, auth = true): Promise<string> {
+    const headers: Record<string, string> = {};
+    if (auth && this.storage) {
+      const token = this.storage.getAccessToken();
+      if (token) headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await this.fetchFn(`${this.baseUrl}${path}`, { method: "GET", headers });
+    const text = await response.text();
+    if (!response.ok) {
+      throw new AdalahApiError("REQUEST_FAILED", text || "Request failed", response.status);
+    }
+    return text;
   }
 
   private post<T>(path: string, body: unknown, auth = true) {

@@ -20,11 +20,15 @@ export const testEnv: Env = {
   LLM_PROVIDER: "mock",
   OPENAI_API_KEY: undefined,
   OPENAI_MODEL: "gpt-4o-mini",
+  OPENAI_EMBEDDING_MODEL: "text-embedding-3-small",
+  OPENAI_TIMEOUT_MS: 30_000,
+  OPENAI_MAX_RETRIES: 2,
   EMBEDDER_PROVIDER: "mock",
   EMBEDDING_DIMENSIONS: 384,
   RAG_TOP_K: 5,
   RAG_CHUNK_SIZE: 500,
   RAG_CHUNK_OVERLAP: 50,
+  METRICS_ENABLED: false,
 };
 
 let migrated = false;

@@ -10,6 +10,9 @@ import { chatRoutes } from "./modules/chat/chat.routes.js";
 import { documentRoutes } from "./modules/documents/document.routes.js";
 import { userRoutes } from "./modules/users/user.routes.js";
 import { AppError, formatError } from "./lib/errors.js";
+import { OpenAIError, toAppError } from "./ai/openai-errors.js";
+import { systemRoutes } from "./modules/system/system.routes.js";
+import { metrics } from "./lib/metrics.js";
 
 declare module "fastify" {
   interface FastifyInstance {
@@ -17,6 +20,9 @@ declare module "fastify" {
     config: Env;
     ai: AIProviders;
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+  }
+  interface FastifyRequest {
+    startTime?: number;
   }
 }
 
@@ -67,6 +73,10 @@ export async function buildApp(env: Env) {
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send(formatError(error));
     }
+    if (error instanceof OpenAIError) {
+      const appError = toAppError(error);
+      return reply.status(appError.statusCode).send(formatError(appError));
+    }
     app.log.error(error);
     return reply.status(500).send({
       error: {
@@ -77,11 +87,38 @@ export async function buildApp(env: Env) {
     });
   });
 
+  app.addHook("onRequest", async (request) => {
+    request.startTime = Date.now();
+  });
+
+  app.addHook("onResponse", async (request, reply) => {
+    if (!env.METRICS_ENABLED) return;
+    const duration = Date.now() - (request.startTime ?? Date.now());
+    const route = request.routeOptions?.url ?? request.url;
+    metrics.httpRequests.inc("adalah_http_requests_total", {
+      method: request.method,
+      route,
+      status: String(reply.statusCode),
+    });
+    metrics.httpDurationMs.observe("adalah_http_duration_ms", duration, {
+      method: request.method,
+      route,
+    });
+    if (reply.statusCode >= 500) {
+      metrics.httpErrors.inc("adalah_http_errors_total", {
+        method: request.method,
+        route,
+      });
+    }
+  });
+
   app.get("/health", async () => ({
     status: "ok",
     service: "adalah-api",
     timestamp: new Date().toISOString(),
   }));
+
+  await app.register(systemRoutes);
 
   await app.register(authRoutes, { prefix: "/api/v1/auth" });
 

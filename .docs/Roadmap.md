@@ -29,7 +29,8 @@
 
 ### المرحلة 2 — الذكاء القانوني
 
-- [ ] OpenAI integration حقيقي
+- [x] OpenAI integration (providers + env + error handling)
+- [x] Production monitoring (health, ready, metrics)
 - [ ] Fine-tuning / prompt engineering للسياق القانوني العربي
 - [ ] تحليل عقود ومستندات
 - [ ] بحث في التشريعات والسوابق
@@ -58,7 +59,8 @@
 | Chat UI v1 | Sprint-004 | ✅ |
 | Citations + UX | Sprint-005 | ✅ |
 | API SDK + Deploy | Sprint-006 | ✅ |
-| OpenAI + Monitoring | Sprint-007 | ⬜ مخطط |
+| OpenAI + Monitoring | Sprint-007 | ✅ |
+| Staging + Smoke tests | Sprint-008 | ⬜ مخطط |
 
 ## كيفية تحديث هذه الوثيقة
 

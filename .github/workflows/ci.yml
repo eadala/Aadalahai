@@ -35,6 +35,7 @@ jobs:
       LLM_PROVIDER: mock
       EMBEDDER_PROVIDER: mock
       EMBEDDING_DIMENSIONS: 384
+      METRICS_ENABLED: false
 
     steps:
       - uses: actions/checkout@v4

@@ -5,6 +5,7 @@ import type { Citation } from "../../db/schema.js";
 import { toVectorLiteral } from "../../lib/vector.js";
 import type { Env } from "../../config/env.js";
 import { buildEnhancedCitations } from "./citation.service.js";
+import { metrics } from "../../lib/metrics.js";
 
 import type { RetrievedChunk } from "./types.js";
 
@@ -18,6 +19,7 @@ export class RAGService {
   ) {}
 
   async retrieve(userId: string, query: string): Promise<RetrievedChunk[]> {
+    const start = Date.now();
     const queryEmbedding = await this.embedder.embed(query);
     const vectorLiteral = toVectorLiteral(queryEmbedding);
 
@@ -42,13 +44,21 @@ export class RAGService {
       LIMIT ${this.env.RAG_TOP_K}
     `);
 
-    return results.map((row) => ({
+    const chunks = results.map((row) => ({
       chunkId: row.chunk_id,
       documentId: row.document_id,
       documentTitle: row.document_title,
       content: row.content,
       similarity: Number(row.similarity),
     }));
+
+    if (this.env.METRICS_ENABLED) {
+      metrics.ragDurationMs.observe("adalah_rag_duration_ms", Date.now() - start, {
+        provider: this.embedder.name,
+      });
+    }
+
+    return chunks;
   }
 
   buildContext(chunks: RetrievedChunk[]): string {

@@ -1,7 +1,9 @@
 import type { LLMMessage, LLMOptions, LLMProvider } from "../types.js";
+import { openaiFetch, type OpenAIFetchOptions } from "../openai-client.js";
 
 interface OpenAIChatResponse {
   choices: Array<{ message: { content: string } }>;
+  usage?: { prompt_tokens?: number; completion_tokens?: number; total_tokens?: number };
 }
 
 interface OpenAIStreamChunk {
@@ -12,49 +14,45 @@ export class OpenAILLMProvider implements LLMProvider {
   readonly name = "openai";
 
   constructor(
-    private readonly apiKey: string,
+    private readonly fetchOptions: OpenAIFetchOptions,
     private readonly model: string
   ) {}
 
   async complete(messages: LLMMessage[], options?: LLMOptions): Promise<string> {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        "Content-Type": "application/json",
+    const response = await openaiFetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          model: this.model,
+          messages: this.buildMessages(messages, options),
+          temperature: options?.temperature ?? 0.3,
+        }),
       },
-      body: JSON.stringify({
-        model: this.model,
-        messages: this.buildMessages(messages, options),
-        temperature: options?.temperature ?? 0.3,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
-    }
+      this.fetchOptions
+    );
 
     const data = (await response.json()) as OpenAIChatResponse;
     return data.choices[0]?.message?.content ?? "";
   }
 
   async *stream(messages: LLMMessage[], options?: LLMOptions): AsyncGenerator<string> {
-    const response = await fetch("https://api.openai.com/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        "Content-Type": "application/json",
+    const response = await openaiFetch(
+      "https://api.openai.com/v1/chat/completions",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          model: this.model,
+          messages: this.buildMessages(messages, options),
+          temperature: options?.temperature ?? 0.3,
+          stream: true,
+        }),
       },
-      body: JSON.stringify({
-        model: this.model,
-        messages: this.buildMessages(messages, options),
-        temperature: options?.temperature ?? 0.3,
-        stream: true,
-      }),
-    });
+      this.fetchOptions
+    );
 
-    if (!response.ok || !response.body) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+    if (!response.body) {
+      throw new Error("OpenAI stream body missing");
     }
 
     const reader = response.body.getReader();

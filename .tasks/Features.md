@@ -14,6 +14,8 @@
 | F-008 | Legal citations | Sprint-005 | 2026-07-05 |
 | F-009 | Arabic RTL UI | Sprint-004 | 2026-07-05 |
 | F-010 | API SDK | Sprint-006 | 2026-07-05 |
+| F-011 | OpenAI integration | Sprint-007 | 2026-07-05 |
+| F-012 | Production monitoring | Sprint-007 | 2026-07-05 |
 
 ## جاري 🟡
 
@@ -25,8 +27,8 @@
 
 | # | الميزة | السبرنت المستهدف | الأولوية |
 |---|---|---|---|
-| F-011 | OpenAI integration | Sprint-007 | عالي |
-| F-012 | Production monitoring | Sprint-007 | متوسط |
+| F-013 | Staging deploy + OpenAI smoke | Sprint-008 | عالي |
+| F-014 | Prompt engineering عربي | Sprint-008 | متوسط |
 
 ## مرفوض ❌
 

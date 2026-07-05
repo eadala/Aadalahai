@@ -1,4 +1,5 @@
 import type { Embedder } from "../types.js";
+import { openaiFetch, type OpenAIFetchOptions } from "../openai-client.js";
 
 interface OpenAIEmbeddingResponse {
   data: Array<{ embedding: number[] }>;
@@ -8,7 +9,8 @@ export class OpenAIEmbedder implements Embedder {
   readonly name = "openai";
 
   constructor(
-    private readonly apiKey: string,
+    private readonly fetchOptions: OpenAIFetchOptions,
+    private readonly embeddingModel: string,
     readonly dimensions: number = 384
   ) {}
 
@@ -18,22 +20,18 @@ export class OpenAIEmbedder implements Embedder {
   }
 
   async embedBatch(texts: string[]): Promise<number[][]> {
-    const response = await fetch("https://api.openai.com/v1/embeddings", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${this.apiKey}`,
-        "Content-Type": "application/json",
+    const response = await openaiFetch(
+      "https://api.openai.com/v1/embeddings",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          model: this.embeddingModel,
+          input: texts,
+          dimensions: this.dimensions,
+        }),
       },
-      body: JSON.stringify({
-        model: "text-embedding-3-small",
-        input: texts,
-        dimensions: this.dimensions,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`OpenAI Embeddings API error: ${response.status}`);
-    }
+      this.fetchOptions
+    );
 
     const data = (await response.json()) as OpenAIEmbeddingResponse;
     return data.data.map((d) => d.embedding);

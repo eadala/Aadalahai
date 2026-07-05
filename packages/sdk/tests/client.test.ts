@@ -49,6 +49,22 @@ describe("AdalahClient", () => {
     );
   });
 
+  it("should call ready endpoint", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        status: "ready",
+        service: "adalah-api",
+        checks: { database: { status: "ok" } },
+        timestamp: "2026-07-05T00:00:00.000Z",
+      }),
+    });
+
+    const result = await client.system.ready();
+    expect(result.status).toBe("ready");
+  });
+
   it("should login without auth header", async () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,

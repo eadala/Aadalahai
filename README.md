@@ -72,16 +72,24 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```typescript
 import { AdalahClient } from "@adalah/sdk";
 
-const client = new AdalahClient({
-  baseUrl: process.env.ADALAH_API_URL ?? "http://localhost:3001",
-});
+const client = new AdalahClient({ baseUrl: "http://localhost:3001" });
 
-const { tokens, user } = await client.auth.login("user@example.com", "SecurePass1");
-const session = await client.chat.createSession("استشارة قانونية");
+// Monitoring
+await client.system.health();
+await client.system.ready();
 
-for await (const event of client.chat.streamMessage(session.session.id, "ما هي حقوق العامل؟")) {
-  if (event.type === "token") process.stdout.write(event.content);
-}
+// Auth + Chat
+await client.auth.login("user@example.com", "SecurePass1");
+```
+
+## OpenAI (إنتاج)
+
+```bash
+LLM_PROVIDER=openai
+EMBEDDER_PROVIDER=openai
+OPENAI_API_KEY=sk-your-key
+OPENAI_MODEL=gpt-4o-mini
+OPENAI_EMBEDDING_MODEL=text-embedding-3-small
 ```
 
 راجع [packages/sdk/README.md](packages/sdk/README.md) و [`.docs/API/openapi.yaml`](.docs/API/openapi.yaml).

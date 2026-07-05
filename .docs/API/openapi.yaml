@@ -11,11 +11,31 @@ servers:
 paths:
   /health:
     get:
-      summary: Health check
+      summary: Health check (liveness)
       tags: [System]
       responses:
         "200":
           description: OK
+
+  /ready:
+    get:
+      summary: Readiness check (database + AI providers)
+      tags: [System]
+      responses:
+        "200":
+          description: Ready or degraded
+        "503":
+          description: Unavailable
+
+  /metrics:
+    get:
+      summary: Prometheus metrics
+      tags: [System]
+      responses:
+        "200":
+          description: Prometheus text format
+        "404":
+          description: Metrics disabled
 
   /api/v1/auth/register:
     post:
