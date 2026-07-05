@@ -1,50 +1,47 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-002 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-003 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
-| المرحلة | 1 — النواة (بدأت) |
-| السبرنت الحالي | Sprint-003 (مخطط) |
-| الوثائق الهندسية | 42 / 100+ |
-| ADRs | 3 |
-| الميزات المكتملة | 1 (Auth) |
-| الاختبارات | 15 ✅ |
-| الأخطاء المفتوحة | 0 |
+| المرحلة | 1 — النواة |
+| السبرنت الحالي | Sprint-004 (مخطط) |
+| الوثائق الهندسية | 48 / 100+ |
+| ADRs | 5 |
+| الميزات المكتملة | 3 |
+| الاختبارات | 30 ✅ |
+| API Endpoints | 14 |
 
-## Sprint-002 — Auth + بيئة تطوير ✅
+## Sprint-003 — Chat + RAG ✅
 
 | المهمة | الحالة |
 |---|---|
-| Docker Compose (Postgres + Redis) | ✅ |
-| CI pipeline (GitHub Actions) | ✅ |
-| User model + migration (Drizzle) | ✅ |
-| Auth API (5 endpoints) | ✅ |
-| JWT middleware | ✅ |
-| Auth tests (15) | ✅ |
-| ADR-002 (tech stack) + ADR-003 (auth) | ✅ |
-| API + Database docs | ✅ |
+| Chat sessions + messages | ✅ |
+| Documents + chunks + pgvector | ✅ |
+| RAG retrieval (top-5) | ✅ |
+| LLM mock + OpenAI providers | ✅ |
+| SSE streaming | ✅ |
+| 15 اختبار جديد | ✅ |
+
+## الميزات المكتملة
+
+1. Engineering OS (Sprint-001)
+2. Auth API (Sprint-002)
+3. Chat + RAG (Sprint-003)
 
 ## Stack
 
 | المكون | التقنية |
 |---|---|
-| API | Node.js 22 + TypeScript + Fastify |
+| API | Fastify + TypeScript |
 | ORM | Drizzle |
-| DB | PostgreSQL 16 |
-| Cache | Redis 7 (Docker) |
-| Auth | JWT + Refresh Token Rotation |
-| Tests | Vitest (15 tests) |
-| CI | GitHub Actions |
-
-## القرارات
-
-- [ADR-001](.docs/ADR/001-engineering-os.md): Engineering OS
-- [ADR-002](.docs/ADR/002-tech-stack.md): Node.js + Fastify + Drizzle
-- [ADR-003](.docs/ADR/003-auth-strategy.md): JWT + Refresh Rotation
+| DB | PostgreSQL 16 + pgvector |
+| LLM | Pluggable (mock / OpenAI) |
+| RAG | pgvector cosine search |
+| Tests | Vitest (30) |
 
 ## الخطوة التالية
 
-Sprint-003: Chat sessions + RAG pipeline MVP
+Sprint-004: Chat UI (Next.js) + Arabic RTL

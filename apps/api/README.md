@@ -35,9 +35,17 @@ npm run dev
 | POST | `/api/v1/auth/login` | No |
 | POST | `/api/v1/auth/refresh` | No |
 | POST | `/api/v1/auth/logout` | No |
-| GET | `/api/v1/auth/me` | Bearer JWT |
+| GET | `/api/v1/auth/me` | Bearer |
+| POST | `/api/v1/chat/sessions` | Bearer |
+| GET | `/api/v1/chat/sessions` | Bearer |
+| GET | `/api/v1/chat/sessions/:id` | Bearer |
+| DELETE | `/api/v1/chat/sessions/:id` | Bearer |
+| POST | `/api/v1/chat/sessions/:id/messages` | Bearer |
+| POST | `/api/v1/documents` | Bearer |
+| GET | `/api/v1/documents` | Bearer |
+| GET | `/api/v1/documents/:id` | Bearer |
 
-See [.docs/API/README.md](../../.docs/API/README.md) for full documentation.
+See [.docs/API/](../../.docs/API/) for full documentation.
 
 ## Tests
 

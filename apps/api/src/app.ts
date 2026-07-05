@@ -4,13 +4,17 @@ import jwt from "@fastify/jwt";
 import type { FastifyRequest, FastifyReply } from "fastify";
 import type { Env } from "./config/env.js";
 import { createDb, type Database } from "./db/index.js";
+import { createAIProviders, type AIProviders } from "./ai/factory.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
+import { chatRoutes } from "./modules/chat/chat.routes.js";
+import { documentRoutes } from "./modules/documents/document.routes.js";
 import { AppError, formatError } from "./lib/errors.js";
 
 declare module "fastify" {
   interface FastifyInstance {
     db: Database;
     config: Env;
+    ai: AIProviders;
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }
@@ -28,8 +32,11 @@ export async function buildApp(env: Env) {
   });
 
   const db = createDb(env.DATABASE_URL);
+  const ai = createAIProviders(env);
+
   app.decorate("config", env);
   app.decorate("db", db);
+  app.decorate("ai", ai);
 
   await app.register(cors, { origin: true });
 
@@ -76,6 +83,14 @@ export async function buildApp(env: Env) {
   }));
 
   await app.register(authRoutes, { prefix: "/api/v1/auth" });
+
+  await app.register(
+    async (protectedRoutes) => {
+      protectedRoutes.addHook("preHandler", app.authenticate);
+      await protectedRoutes.register(chatRoutes, { prefix: "/api/v1/chat" });
+      await protectedRoutes.register(documentRoutes, { prefix: "/api/v1/documents" });
+    }
+  );
 
   return app;
 }

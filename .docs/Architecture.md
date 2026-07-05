@@ -94,3 +94,5 @@
 | [001](./ADR/001-engineering-os.md) | اعتماد Engineering OS كأساس للتطوير |
 | [002](./ADR/002-tech-stack.md) | Node.js + TypeScript + Fastify + Drizzle |
 | [003](./ADR/003-auth-strategy.md) | JWT + Refresh Token Rotation |
+| [004](./ADR/004-llm-integration.md) | LLM pluggable + SSE streaming |
+| [005](./ADR/005-rag-architecture.md) | pgvector RAG في PostgreSQL |

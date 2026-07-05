@@ -2,64 +2,88 @@
 
 ## التقنية
 
-- **PostgreSQL 16+**
-- **Drizzle ORM** للـ migrations والاستعلامات
-- **Redis** للـ cache (Sprint لاحق)
+- **PostgreSQL 16+** + **pgvector**
+- **Drizzle ORM**
 
 ## الجداول
 
-### `users`
+### `users` ✅
+| العمود | النوع |
+|---|---|
+| id | UUID PK |
+| email | VARCHAR(255) UNIQUE |
+| password_hash | VARCHAR(255) |
+| name | VARCHAR(255) |
+| role | ENUM: user, lawyer, admin |
+| created_at, updated_at | TIMESTAMPTZ |
 
-| العمود | النوع | الوصف |
-|---|---|---|
-| `id` | UUID PK | معرف فريد |
-| `email` | VARCHAR(255) UNIQUE | البريد الإلكتروني |
-| `password_hash` | VARCHAR(255) | argon2id hash |
-| `name` | VARCHAR(255) | الاسم |
-| `role` | ENUM | `user` \| `lawyer` \| `admin` |
-| `created_at` | TIMESTAMPTZ | تاريخ الإنشاء |
-| `updated_at` | TIMESTAMPTZ | تاريخ التحديث |
+### `refresh_tokens` ✅
+| العمود | النوع |
+|---|---|
+| id | UUID PK |
+| user_id | UUID FK → users |
+| token_hash | VARCHAR(64) UNIQUE |
+| expires_at | TIMESTAMPTZ |
+| revoked_at | TIMESTAMPTZ NULL |
 
-### `refresh_tokens`
+### `chat_sessions` ✅
+| العمود | النوع |
+|---|---|
+| id | UUID PK |
+| user_id | UUID FK → users |
+| title | VARCHAR(255) |
+| created_at, updated_at | TIMESTAMPTZ |
 
-| العمود | النوع | الوصف |
-|---|---|---|
-| `id` | UUID PK | معرف فريد |
-| `user_id` | UUID FK → users | المستخدم |
-| `token_hash` | VARCHAR(64) UNIQUE | SHA-256 hash |
-| `expires_at` | TIMESTAMPTZ | تاريخ الانتهاء |
-| `revoked_at` | TIMESTAMPTZ NULL | تاريخ الإلغاء |
-| `created_at` | TIMESTAMPTZ | تاريخ الإنشاء |
+### `messages` ✅
+| العمود | النوع |
+|---|---|
+| id | UUID PK |
+| session_id | UUID FK → chat_sessions |
+| role | ENUM: user, assistant, system |
+| content | TEXT |
+| citations | JSONB |
+| created_at | TIMESTAMPTZ |
+
+### `documents` ✅
+| العمود | النوع |
+|---|---|
+| id | UUID PK |
+| user_id | UUID FK → users |
+| title | VARCHAR(255) |
+| content | TEXT |
+| status | ENUM: processing, ready, failed |
+| created_at, updated_at | TIMESTAMPTZ |
+
+### `document_chunks` ✅
+| العمود | النوع |
+|---|---|
+| id | UUID PK |
+| document_id | UUID FK → documents |
+| content | TEXT |
+| chunk_index | INTEGER |
+| embedding | vector(384) |
+| created_at | TIMESTAMPTZ |
 
 ## مخطط ER
 
 ```
 users ──< refresh_tokens
+users ──< chat_sessions ──< messages
+users ──< documents ──< document_chunks (embedding)
 ```
 
 ## Migrations
 
 ```
-apps/api/src/db/migrations/
-  0000_bright_may_parker.sql   ← users + refresh_tokens
+0000_bright_may_parker.sql  ← users + refresh_tokens
+0001_glamorous_hellion.sql  ← chat + documents + pgvector
 ```
 
-**تشغيل:**
-```bash
-npm run db:migrate
+## Vector Search
+
+```sql
+SELECT content, 1 - (embedding <=> $query_vector) AS similarity
+FROM document_chunks
+ORDER BY embedding <=> $query_vector
+LIMIT 5;
 ```
-
-**إنشاء migration جديد:**
-```bash
-npm run db:generate
-```
-
-## الجداول المخططة (لاحقًا)
-
-| الجدول | الغرض | السبرنت |
-|---|---|---|
-| `sessions` | جلسات المحادثة | Sprint-003 |
-| `messages` | رسائل المحادثة | Sprint-003 |
-| `documents` | وثائق قانونية | Sprint-004 |
-| `document_chunks` | مقاطع RAG | Sprint-004 |
-| `embeddings` | متجهات | Sprint-004 |

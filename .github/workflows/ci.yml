@@ -12,7 +12,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:16-alpine
+        image: pgvector/pgvector:pg16
         env:
           POSTGRES_USER: adalah
           POSTGRES_PASSWORD: adalah_dev
@@ -32,6 +32,9 @@ jobs:
       JWT_ACCESS_EXPIRES_IN: 15m
       JWT_REFRESH_EXPIRES_DAYS: 7
       NODE_ENV: test
+      LLM_PROVIDER: mock
+      EMBEDDER_PROVIDER: mock
+      EMBEDDING_DIMENSIONS: 384
 
     steps:
       - uses: actions/checkout@v4

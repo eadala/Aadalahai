@@ -1,134 +1,46 @@
-# API — Auth Service
+# API — عدالة
 
-> Base URL: `http://localhost:3001`  
-> Version: `v1`  
-> ADR: [003-auth-strategy](../ADR/003-auth-strategy.md)
+> Base URL: `http://localhost:3001` | Version: `v1`
 
-## Auth Endpoints
+## Auth — `/api/v1/auth`
 
-### POST `/api/v1/auth/register`
+| Method | Path | Auth | الحالة |
+|---|---|---|---|
+| POST | `/register` | No | ✅ |
+| POST | `/login` | No | ✅ |
+| POST | `/refresh` | No | ✅ |
+| POST | `/logout` | No | ✅ |
+| GET | `/me` | Bearer | ✅ |
 
-تسجيل مستخدم جديد.
+راجع [Auth docs](./auth.md) للتفاصيل.
 
-**Request:**
-```json
-{
-  "email": "lawyer@example.com",
-  "password": "SecurePass1",
-  "name": "محامي تجريبي"
-}
-```
+## Chat — `/api/v1/chat`
 
-**Password rules:** 8+ chars, uppercase, lowercase, digit.
+| Method | Path | Auth | الحالة |
+|---|---|---|---|
+| POST | `/sessions` | Bearer | ✅ |
+| GET | `/sessions` | Bearer | ✅ |
+| GET | `/sessions/:id` | Bearer | ✅ |
+| DELETE | `/sessions/:id` | Bearer | ✅ |
+| POST | `/sessions/:id/messages` | Bearer | ✅ |
 
-**Response (201):**
-```json
-{
-  "user": {
-    "id": "uuid",
-    "email": "lawyer@example.com",
-    "name": "محامي تجريبي",
-    "role": "user",
-    "createdAt": "2026-07-05T08:00:00.000Z"
-  },
-  "tokens": {
-    "accessToken": "eyJ...",
-    "refreshToken": "base64url...",
-    "expiresIn": "15m"
-  }
-}
-```
+راجع [Chat docs](./chat.md) للتفاصيل.
 
-**Errors:** `400` VALIDATION_ERROR, `409` EMAIL_EXISTS
+## Documents — `/api/v1/documents`
 
----
+| Method | Path | Auth | الحالة |
+|---|---|---|---|
+| POST | `/` | Bearer | ✅ |
+| GET | `/` | Bearer | ✅ |
+| GET | `/:id` | Bearer | ✅ |
 
-### POST `/api/v1/auth/login`
+راجع [Documents docs](./documents.md) للتفاصيل.
 
-تسجيل الدخول.
+## Health
 
-**Request:**
-```json
-{
-  "email": "lawyer@example.com",
-  "password": "SecurePass1"
-}
-```
-
-**Response (200):** نفس هيكل register.
-
-**Errors:** `401` INVALID_CREDENTIALS
-
----
-
-### POST `/api/v1/auth/refresh`
-
-تجديد access token مع rotation للـ refresh token.
-
-**Request:**
-```json
-{
-  "refreshToken": "base64url..."
-}
-```
-
-**Response (200):** نفس هيكل register (refresh token جديد).
-
-**Errors:** `401` INVALID_REFRESH_TOKEN
-
----
-
-### POST `/api/v1/auth/logout`
-
-إلغاء refresh token.
-
-**Request:**
-```json
-{
-  "refreshToken": "base64url..."
-}
-```
-
-**Response (200):**
-```json
-{ "message": "تم تسجيل الخروج" }
-```
-
----
-
-### GET `/api/v1/auth/me`
-
-المستخدم الحالي. يتطلب `Authorization: Bearer <accessToken>`.
-
-**Response (200):**
-```json
-{
-  "user": {
-    "id": "uuid",
-    "email": "lawyer@example.com",
-    "name": "محامي تجريبي",
-    "role": "user",
-    "createdAt": "2026-07-05T08:00:00.000Z"
-  }
-}
-```
-
-**Errors:** `401` UNAUTHORIZED
-
----
-
-### GET `/health`
-
-فحص صحة الخادم.
-
-**Response (200):**
-```json
-{
-  "status": "ok",
-  "service": "adalah-api",
-  "timestamp": "2026-07-05T08:00:00.000Z"
-}
-```
+| Method | Path | Auth |
+|---|---|---|
+| GET | `/health` | No |
 
 ## تنسيق الأخطاء
 
@@ -141,12 +53,3 @@
   }
 }
 ```
-
-## الخدمات
-
-| الخدمة | Base Path | الحالة |
-|---|---|---|
-| Auth | `/api/v1/auth` | ✅ Sprint-002 |
-| Users | `/api/v1/users` | ⬜ مخطط |
-| Chat | `/api/v1/chat` | ⬜ مخطط |
-| Documents | `/api/v1/documents` | ⬜ مخطط |
