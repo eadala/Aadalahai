@@ -1,42 +1,31 @@
 # حالة المشروع — عدالة
 
-> آخر تحديث: 2026-07-05 | السبرنت: Sprint-009 ✅
+> آخر تحديث: 2026-07-05 | السبرنت: Sprint-010 ✅
 
 ## الملخص
 
 | المؤشر | القيمة |
 |---|---|
-| المرحلة | 2 — جاهز للإنتاج |
-| الفرع الرئيسي | `main` |
-| السبرنت الحالي | Sprint-010 (مخطط) |
-| ADRs | 10 |
-| API Tests | 54 ✅ |
+| المرحلة | 2 — الذكاء القانوني |
+| السبرنت الحالي | Sprint-011 (مخطط) |
+| ADRs | 11 |
+| API Tests | 58 ✅ (+4 prompts, +2 live optional) |
 | SDK Tests | 7 ✅ |
 | E2E Tests | 4 ✅ |
-| Smoke Tests | 13 (staging + production) |
 
-## Sprint-009 — Production + HTTPS ✅
+## Sprint-010 — Prompt Engineering + OpenAI Live ✅
 
-- Caddy reverse proxy + Let's Encrypt
-- `scripts/deploy-prod.sh` (direct / https modes)
-- `scripts/production-smoke.mjs`
-- CORS_ORIGINS + trustProxy
-- `.docs/DEPLOYMENT.md` + ADR-010
+- `legal-assistant.ts` — prompts عربية هندسية
+- تنسيق إجابة: ملخص → تفصيل → تنبيه
+- `openai-smoke.mjs` + workflow يدوي
+- ADR-011
 
-## النشر
+## OpenAI Live
 
 ```bash
-# Staging
-npm run staging:up && npm run staging:smoke
-
-# Production (VPS + domain)
-cp .env.prod.example .env.prod
-./scripts/deploy-prod.sh
-npm run prod:smoke
+OPENAI_API_KEY=sk-... npm run openai:smoke
 ```
-
-راجع [.docs/DEPLOYMENT.md](.docs/DEPLOYMENT.md) للتفاصيل.
 
 ## الخطوة التالية
 
-Sprint-010: Prompt engineering عربي + OpenAI live validation
+Sprint-011: Analytics + lawyer onboarding
