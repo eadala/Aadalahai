@@ -22,16 +22,15 @@
 - tag `legacy-replit-pre-cutover` للكود القديم
 - workflow: `Publish to adala-ai` (يتطلب secret `ADALA_AI_SYNC_TOKEN`)
 
-## Sprint-018 — نشر VPS على adalahai.com 🟡
+## Sprint-018 — استبدال Replit 🔴
 
-- `scripts/preflight-adalahai.sh` — فحص DNS + Replit + API قبل القطع
-- `scripts/vps-bootstrap-adalahai.sh` — إعداد VPS + clone
-- workflow: `adalahai Remote Smoke` (19 اختبار على النطاق الحي)
-- **حاجز حالي**: `api.adalahai.com` بدون DNS؛ الموقع لا يزال Replit
+- Replit **متوقف** — الموقع يحتاج VPS فوراً
+- workflow جديد: **VPS Deploy adalahai.com** (SSH + Docker)
+- `write-prod-env.sh` + bootstrap من `Aadalahai` (الكود الفعلي)
 
-## الخطوة التالية
+## الخطوة التالية (عاجل)
 
-1. `npm run publish:adala-ai` (admin)
-2. VPS + `./scripts/vps-bootstrap-adalahai.sh`
-3. Cloudflare DNS → VPS IP
-4. `npm run preflight:adalahai` ثم `npm run prod:smoke:remote`
+1. أضف GitHub secrets: `VPS_HOST`, `VPS_SSH_PRIVATE_KEY`, `PROD_*`
+2. شغّل workflow **VPS Deploy adalahai.com** (اكتب `deploy`)
+3. Cloudflare: `adalahai.com` + `api.adalahai.com` → IP الخادم
+4. `npm run prod:smoke:remote`
