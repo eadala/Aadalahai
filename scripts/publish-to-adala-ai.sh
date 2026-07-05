@@ -3,10 +3,11 @@
 # Requires admin/write access to eadala/adala-ai
 set -euo pipefail
 
-TARGET_REPO="${TARGET_REPO:-git@github.com:eadala/adala-ai.git}"
+TARGET_REPO="${TARGET_REPO:-https://github.com/eadala/adala-ai.git}"
 LEGACY_TAG="${LEGACY_TAG:-legacy-replit-pre-cutover}"
 SOURCE_BRANCH="${SOURCE_BRANCH:-main}"
 REMOTE_NAME="${REMOTE_NAME:-adala-ai}"
+USE_ISOLATED_GIT_CONFIG=0
 
 echo "=== Publish to eadala/adala-ai (same repo, same name) ==="
 echo "Source branch: ${SOURCE_BRANCH}"
@@ -19,22 +20,27 @@ if ! git rev-parse --verify "${SOURCE_BRANCH}" >/dev/null 2>&1; then
 fi
 
 setup_git_push() {
-  export GIT_CONFIG_GLOBAL="${GIT_CONFIG_GLOBAL:-/dev/null}"
-  export GIT_CONFIG_SYSTEM="${GIT_CONFIG_SYSTEM:-/dev/null}"
-
   if [ -n "${ADALA_AI_SSH_KEY:-}" ]; then
+    USE_ISOLATED_GIT_CONFIG=1
+    export GIT_CONFIG_GLOBAL=/dev/null
+    export GIT_CONFIG_SYSTEM=/dev/null
     KEY_FILE="$(mktemp)"
     trap 'rm -f "$KEY_FILE"' EXIT
     printf '%s\n' "$ADALA_AI_SSH_KEY" > "$KEY_FILE"
     chmod 600 "$KEY_FILE"
     export GIT_SSH_COMMAND="ssh -i ${KEY_FILE} -o StrictHostKeyChecking=no -o IdentitiesOnly=yes"
     TARGET_REPO="git@github.com:eadala/adala-ai.git"
-    echo "Using SSH deploy key"
+    echo "Auth: SSH deploy key"
   elif [ -n "${ADALA_AI_SYNC_TOKEN:-}" ]; then
     TARGET_REPO="https://x-access-token:${ADALA_AI_SYNC_TOKEN}@github.com/eadala/adala-ai.git"
-    echo "Using HTTPS token"
+    echo "Auth: HTTPS token (ADALA_AI_SYNC_TOKEN)"
   elif [[ "${TARGET_REPO}" == git@* ]]; then
-    echo "Using SSH (agent/default key)"
+    USE_ISOLATED_GIT_CONFIG=1
+    export GIT_CONFIG_GLOBAL=/dev/null
+    export GIT_CONFIG_SYSTEM=/dev/null
+    echo "Auth: SSH (default agent key)"
+  else
+    echo "Auth: HTTPS (git credentials / cursor token)"
   fi
 }
 
@@ -66,5 +72,5 @@ echo "Pushing ${SOURCE_BRANCH} → adala-ai/main (force)..."
 git push "${REMOTE_NAME}" "${SOURCE_BRANCH}:main" --force
 
 echo ""
-echo "Done. Canonical repo: git@github.com:eadala/adala-ai.git"
+echo "Done. Canonical repo: https://github.com/eadala/adala-ai.git"
 echo "Next: ./scripts/cutover-adalahai.sh on VPS (see .docs/MIGRATION-adala-ai-cutover.md)"
