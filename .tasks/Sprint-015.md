@@ -30,11 +30,25 @@ E2E: 7 ✅ (+1)
 Smoke: 18 ✅ (+2)
 ```
 
-## التحقق بعد الدمج (PR #15)
+## التحقق بعد الدمج (PR #15 + #16)
 
-- Lint + typecheck ✅
-- OpenAPI validated (`swagger-cli validate`) ✅
-- إصلاح `registerTestUser` — fallback إلى login عند EMAIL_EXISTS (اختبار legislation)
+| التحقق | النتيجة |
+|---|---|
+| Lint / typecheck | ✅ |
+| API 73 + SDK 11 | ✅ |
+| E2E 7 (Playwright) | ✅ |
+| Smoke 18 | ✅ |
+| Build (sdk → api → web) | ✅ |
+| OpenAPI validate | ✅ |
+| API `:3001` + Web `:3000` | ✅ |
+| Tag `sprint-015` | ✅ |
+
+### إصلاحات التحقق
+
+1. **`seed-legislation.ts`** — `await client.end()` لمنع تعليق E2E global-setup
+2. **`registerTestUser`** — fallback إلى login عند `EMAIL_EXISTS` (اختبار legislation)
+3. **E2E legislation** — `getByRole("article").first().getByText("تشريع")` لتجنب strict mode violation
+4. **OpenAPI** — مسارات `/api/v1/legislation` و `search?scope=`
 
 ## الخطوة التالية
 

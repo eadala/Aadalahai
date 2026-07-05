@@ -42,6 +42,10 @@ for await (const event of client.chat.streamMessage(sessionId, "ما هي الم
 
 // Documents
 await client.documents.upload("نظام العمل", "المادة 77: ...");
+
+// Legislation corpus + scoped search
+const { sources } = await client.legislation.list();
+const results = await client.search.query("محامٍ", { scope: "legislation", limit: 5 });
 ```
 
 ## API Coverage
@@ -51,5 +55,10 @@ await client.documents.upload("نظام العمل", "المادة 77: ...");
 | `auth` | register, login, refresh, logout, me |
 | `users` | getProfile, updateProfile |
 | `chat` | createSession, listSessions, getSession, deleteSession, sendMessage, streamMessage |
-| `documents` | upload, list, get |
-| `health` | check |
+| `documents` | upload, list, get, analyze, listAnalyses, getLatestAnalysis |
+| `search` | query (scope: `all` \| `user` \| `legislation`) |
+| `legislation` | list |
+| `analytics` | me |
+| `onboarding` | getStatus, completeLawyer |
+| `system` | health, ready, metrics |
+| `health` | check (legacy alias) |
