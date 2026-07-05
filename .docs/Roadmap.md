@@ -35,7 +35,7 @@
 - [x] OpenAI live validation
 - [ ] Fine-tuning
 - [x] تحليل عقود ومستندات (MVP — Sprint-012)
-- [x] بحث في التشريعات والسوابق (MVP — وثائق المستخدم، Sprint-013)
+- [x] بحث في التشريعات والسوابق (corpus مشترك — Sprint-015)
 
 ### المرحلة 3 — المنصة المتكاملة
 
@@ -69,6 +69,7 @@
 | Dashboard + Doc Analysis | Sprint-012 | ✅ |
 | Hybrid Legal Search | Sprint-013 | ✅ |
 | Staging + Prod Deploy | Sprint-014 | ✅ |
+| Legislation Corpus | Sprint-015 | ✅ |
 
 ## كيفية تحديث هذه الوثيقة
 

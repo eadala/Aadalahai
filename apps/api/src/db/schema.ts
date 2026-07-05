@@ -137,6 +137,30 @@ export const documentAnalyses = pgTable(
   ]
 );
 
+export const legislationSources = pgTable("legislation_sources", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  title: varchar("title", { length: 255 }).notNull(),
+  category: varchar("category", { length: 128 }).notNull(),
+  jurisdiction: varchar("jurisdiction", { length: 64 }).notNull().default("السعودية"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const legislationChunks = pgTable(
+  "legislation_chunks",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    legislationId: uuid("legislation_id")
+      .notNull()
+      .references(() => legislationSources.id, { onDelete: "cascade" }),
+    articleRef: varchar("article_ref", { length: 64 }).notNull(),
+    content: text("content").notNull(),
+    chunkIndex: integer("chunk_index").notNull(),
+    embedding: embedding("embedding").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [index("legislation_chunks_legislation_id_idx").on(table.legislationId)]
+);
+
 export const lawyerProfiles = pgTable("lawyer_profiles", {
   userId: uuid("user_id")
     .primaryKey()
@@ -224,6 +248,17 @@ export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
   }),
 }));
 
+export const legislationSourcesRelations = relations(legislationSources, ({ many }) => ({
+  chunks: many(legislationChunks),
+}));
+
+export const legislationChunksRelations = relations(legislationChunks, ({ one }) => ({
+  legislation: one(legislationSources, {
+    fields: [legislationChunks.legislationId],
+    references: [legislationSources.id],
+  }),
+}));
+
 export const lawyerProfilesRelations = relations(lawyerProfiles, ({ one }) => ({
   user: one(users, {
     fields: [lawyerProfiles.userId],
@@ -240,3 +275,5 @@ export type Document = typeof documents.$inferSelect;
 export type DocumentChunk = typeof documentChunks.$inferSelect;
 export type LawyerProfile = typeof lawyerProfiles.$inferSelect;
 export type DocumentAnalysis = typeof documentAnalyses.$inferSelect;
+export type LegislationSource = typeof legislationSources.$inferSelect;
+export type LegislationChunk = typeof legislationChunks.$inferSelect;

@@ -196,6 +196,19 @@ export async function runSmokeTests({
   }
 
   {
+    const { res, body } = await api("/api/v1/legislation", { headers: auth });
+    if (res.ok && body?.count >= 2) pass("legislation corpus");
+    else fail(`legislation corpus (${res.status})`);
+  }
+
+  {
+    const { res, body } = await api("/api/v1/search?q=محامٍ&scope=legislation", { headers: auth });
+    if (res.ok && body?.results?.some((r) => r.source === "legislation")) {
+      pass("legislation search");
+    } else fail(`legislation search (${res.status})`);
+  }
+
+  {
     const { res, body } = await api("/api/v1/auth/refresh", {
       method: "POST",
       body: JSON.stringify({ refreshToken }),

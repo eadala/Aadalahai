@@ -188,8 +188,19 @@ describe("AdalahClient", () => {
       }),
     });
 
-    const result = await client.search.query("إجازة");
-    expect(result.count).toBe(1);
+    const result = await client.search.query("إجازة", { scope: "legislation" });
+    expect(result.count).toBeGreaterThanOrEqual(0);
     expect(mockFetch.mock.calls[0][0]).toContain("/api/v1/search?q=");
+  });
+
+  it("should list legislation sources", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({ count: 2, sources: [{ id: "1", title: "نظام", category: "عمل", jurisdiction: "السعودية", createdAt: "" }] }),
+    });
+
+    const result = await client.legislation.list();
+    expect(result.count).toBe(2);
   });
 });

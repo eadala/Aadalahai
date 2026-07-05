@@ -50,4 +50,10 @@ export default async function globalSetup() {
     stdio: "inherit",
     env: { ...process.env, DATABASE_URL: databaseUrl },
   });
+
+  execSync("npm run db:seed -w @adalah/api", {
+    cwd: rootDir,
+    stdio: "inherit",
+    env: { ...process.env, DATABASE_URL: databaseUrl },
+  });
 }

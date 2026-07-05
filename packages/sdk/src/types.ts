@@ -157,9 +157,23 @@ export interface DocumentAnalysis {
 
 export interface SearchResult {
   chunkId: string;
-  documentId: string;
+  source: "user" | "legislation";
+  documentId: string | null;
+  legislationId: string | null;
   documentTitle: string;
+  articleRef: string | null;
+  category: string | null;
   excerpt: string;
   score: number;
   matchType: "hybrid" | "vector" | "keyword";
 }
+
+export interface LegislationSource {
+  id: string;
+  title: string;
+  category: string;
+  jurisdiction: string;
+  createdAt: string;
+}
+
+export type SearchScope = "all" | "user" | "legislation";

@@ -48,8 +48,22 @@ describe("Legal Search API", () => {
     const body = response.json();
     expect(body.query).toBe("إجازة");
     expect(body.results.length).toBeGreaterThan(0);
-    expect(body.results[0].documentTitle).toBe("نظام العمل");
     expect(body.results[0].excerpt).toContain("إجازة");
+  });
+
+  it("should search legislation corpus without user documents", async () => {
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/search?q=محامٍ&scope=legislation",
+      headers: authHeaders(),
+    });
+
+    expect(response.statusCode).toBe(200);
+    const body = response.json();
+    expect(body.scope).toBe("legislation");
+    expect(body.results.length).toBeGreaterThan(0);
+    expect(body.results[0].source).toBe("legislation");
+    expect(body.results[0].documentTitle).toContain("الإجراءات الجزائية");
   });
 
   it("should reject short queries", async () => {
@@ -65,7 +79,7 @@ describe("Legal Search API", () => {
   it("should return empty results when no documents match", async () => {
     const response = await app.inject({
       method: "GET",
-      url: "/api/v1/search?q=تشريع غير موجود",
+      url: "/api/v1/search?q=تشريع غير موجود&scope=user",
       headers: authHeaders(),
     });
 
