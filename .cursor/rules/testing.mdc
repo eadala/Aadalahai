@@ -1,0 +1,52 @@
+---
+description: قواعد الاختبارات — unit, integration, e2e
+globs: ["**/*.test.*", "**/*.spec.*", "**/tests/**", "**/__tests__/**", "**/e2e/**"]
+alwaysApply: false
+---
+
+# Testing Rules — عدالة
+
+## المبدأ
+لا ميزة "مكتملة" بدون اختبارات. اكتب الاختبارات **مع** الكود.
+
+## أنواع الاختبارات
+
+| النوع | الغرض | متى |
+|---|---|---|
+| Unit | دالة/مكون منفرد | كل function/method |
+| Integration | تفاعل بين مكونات | كل API endpoint |
+| E2E | مسار مستخدم كامل | المسارات الحرجة |
+| Performance | ضمن SLOs | endpoints AI |
+
+## التسمية
+```
+describe('ChatService')
+  it('should return streaming response for valid message')
+  it('should reject empty message with 400')
+  it('should handle LLM timeout gracefully')
+```
+
+## قواعد
+- اختبر: الحالة السعيدة + الفاشلة + الحدودية
+- لا test interdependencies
+- Mock external services (LLM, DB in unit tests)
+- Real DB in integration tests (test database)
+- تغطية ≥ 80% للكود الجديد
+
+## البنية
+```
+tests/
+  unit/
+  integration/
+  e2e/
+  fixtures/    → بيانات اختبار
+```
+
+## CI
+- كل PR: lint + unit + integration
+- Main: + e2e
+- Coverage report في PR comments
+
+## المراجع
+- `.ai/Skills/test-planning.md`
+- `.ai/Agents/qa-engineer.md`

@@ -1,0 +1,54 @@
+---
+description: قواعد Frontend — واجهات المستخدم ومكونات React
+globs: ["**/frontend/**", "**/web/**", "**/app/**", "**/*.tsx", "**/*.jsx", "**/*.css"]
+alwaysApply: false
+---
+
+# Frontend Rules — عدالة
+
+## قبل الكتابة
+- اقرأ Design Doc من مرحلة Plan
+- تأكد من component tree المخطط
+
+## التقنيات
+- React / Next.js
+- TypeScript (strict mode)
+- CSS: Tailwind أو CSS Modules
+
+## RTL والعربية
+- `dir="rtl"` افتراضي
+- خط عربي من `.ai/Rules/arabic-content.md`
+- اختبر RTL في كل مكون
+- الأرقام والتواريخ بالتنسيق العربي
+
+## البنية
+```
+components/   → مكونات قابلة لإعادة الاستخدام
+pages/        → صفحات (Next.js app router)
+hooks/        → custom hooks
+lib/          → utilities, API client
+types/        → TypeScript types
+```
+
+## قواعد
+- لا fetch مباشر من components — استخدم API layer في `lib/`
+- Loading state لكل عملية async
+- Error state مع رسالة واضحة بالعربية
+- Empty state عند عدم وجود بيانات
+- Responsive: mobile-first
+
+## الأداء
+- Code splitting (dynamic imports)
+- Lazy load للمكونات الثقيلة
+- Optimize images
+- لا re-renders غير ضرورية (memo, useMemo)
+
+## إمكانية الوصول
+- Semantic HTML
+- ARIA labels بالعربية
+- Keyboard navigation
+- Contrast ratio ≥ 4.5:1
+
+## الاختبارات
+- Component tests (React Testing Library)
+- E2E للمسارات الحرجة (Playwright)

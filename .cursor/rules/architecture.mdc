@@ -1,0 +1,57 @@
+---
+description: قواعد المعمارية — تنطبق على كل التغييرات الهيكلية
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Architecture Rules — عدالة
+
+## قبل أي تغيير هيكلي
+1. اقرأ `.docs/Architecture.md`
+2. تحقق: هل يحتاج ADR؟ (`.ai/Skills/adr-writing.md`)
+3. ناقش مع Chief Architect في Think
+
+## المبادئ
+
+### Separation of Concerns
+- كل خدمة/مكون مسؤولية واحدة
+- لا god classes أو god components
+
+### API-First
+- صمم API قبل الكود
+- وثّق في `.docs/API/` قبل التنفيذ
+
+### Pluggable AI
+- LLM قابل للتبديل (interface/abstraction)
+- لا hardcode لنموذج معين
+- Config-driven model selection
+
+### Event-Driven (حيث يلزم)
+- فهرسة الوثائق: event بعد upload
+- إشعارات: event-driven
+
+## هيكل المشروع
+
+```
+.docs/     → المعرفة (اقرأ أولاً)
+.ai/       → العمليات (اتبع دائماً)
+.tasks/    → العمل الجاري
+.cursor/   → قواعد التنفيذ
+src/       → الكود (يُنشأ لاحقاً)
+```
+
+## ممنوع
+- ❌ قرارات معمارية بدون ADR
+- ❌ خدمات جديدة بدون تحديث Architecture.md
+- ❌ تبعيات دائرية بين الخدمات
+- ❌ Over-engineering (YAGNI)
+- ❌ تغيير هيكلي في PR ميزة صغيرة
+
+## سير العمل
+اتبع: Think → Plan → Build → Review
+(`.ai/Workflows/think-plan-build-review.md`)
+
+## المراجع
+- `.docs/Architecture.md`
+- `.docs/ADR/`
+- `.ai/Agents/chief-architect.md`

@@ -1,0 +1,45 @@
+---
+description: قواعد الأمان — تطبق على كل الكود
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Security Rules — عدالة
+
+## إلزامي في كل PR
+- مراجعة أمنية قبل الدمج (`.ai/Playbooks/security-review.md`)
+- لا أسرار في الكود — environment variables فقط
+- `.env` في `.gitignore` دائمًا
+
+## المصادقة
+- JWT مع expiry قصير (15min) + refresh token
+- RBAC: least privilege
+- لا hardcoded credentials أبدًا
+
+## المدخلات
+- Validate كل input (type, length, format)
+- Sanitize ضد XSS
+- Parameterized queries (لا string concatenation في SQL)
+- File uploads: whitelist types, max size, scan
+
+## البيانات
+- TLS 1.3 لكل الاتصالات
+- تشفير at-rest للبيانات الحساسة
+- لا تسريب بيانات في error messages أو logs
+- Audit log للعمليات الحساسة
+
+## AI Security
+- Prompt injection mitigation
+- System prompts محمية ولا تُكشف
+- Output filtering
+- Rate limiting على AI endpoints
+- لا إرسال PII للـ LLM دون ضوابط
+
+## Dependencies
+- `npm audit` / `pip audit` في CI
+- لا dependencies بثغرات معروفة
+- Pin versions
+
+## مراجع
+- `.docs/Security/`
+- `.ai/Agents/security-engineer.md`
