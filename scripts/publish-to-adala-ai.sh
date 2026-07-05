@@ -21,6 +21,10 @@ if ! git remote get-url adala-ai >/dev/null 2>&1; then
   git remote add adala-ai "${TARGET_REPO}"
 fi
 
+if [ -n "${ADALA_AI_SYNC_TOKEN:-}" ]; then
+  git remote set-url adala-ai "https://x-access-token:${ADALA_AI_SYNC_TOKEN}@github.com/eadala/adala-ai.git"
+fi
+
 echo "Fetching target..."
 git fetch adala-ai
 
