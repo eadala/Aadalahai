@@ -67,7 +67,7 @@ docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```bash
 cp .env.staging.example .env.staging
 npm run staging:up      # يبني ويشغّل Docker stack
-npm run staging:smoke   # 12 اختبار تكامل
+npm run staging:smoke   # 18 اختبار تكامل
 npm run staging:down    # إيقاف
 ```
 
@@ -86,6 +86,10 @@ await client.system.ready();
 
 // Auth + Chat
 await client.auth.login("user@example.com", "SecurePass1");
+
+// Legislation corpus + scoped search
+await client.legislation.list();
+await client.search.query("محامٍ", { scope: "legislation" });
 ```
 
 ## Production (VPS + HTTPS)

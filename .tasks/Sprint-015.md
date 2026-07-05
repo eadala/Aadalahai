@@ -30,6 +30,12 @@ E2E: 7 ✅ (+1)
 Smoke: 18 ✅ (+2)
 ```
 
+## التحقق بعد الدمج (PR #15)
+
+- Lint + typecheck ✅
+- OpenAPI validated (`swagger-cli validate`) ✅
+- إصلاح `registerTestUser` — fallback إلى login عند EMAIL_EXISTS (اختبار legislation)
+
 ## الخطوة التالية
 
 Sprint-016: توسيع corpus + RAG من التشريعات في Chat

@@ -15,7 +15,7 @@
 |---|---|---|
 | 1 | `docker-compose.staging.yml` | ✅ |
 | 2 | `.env.staging.example` | ✅ |
-| 3 | `scripts/staging-smoke.mjs` (16 اختبار) | ✅ |
+| 3 | `scripts/staging-smoke.mjs` (18 اختبار) | ✅ |
 | 4 | GitHub Actions staging workflow | ✅ |
 | 5 | `NEXT_PUBLIC_API_URL` build arg | ✅ |
 | 6 | ADR-009 + docs | ✅ |
