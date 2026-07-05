@@ -1,11 +1,13 @@
 import type { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { ZodError } from "zod";
 import { DocumentService } from "./document.service.js";
+import { DocumentAnalysisService } from "./document-analysis.service.js";
 import { createDocumentSchema } from "./document.schema.js";
 import { AppError, formatError } from "../../lib/errors.js";
 
 export async function documentRoutes(app: FastifyInstance) {
   const service = new DocumentService(app.db, app.ai.embedder, app.config);
+  const analysisService = new DocumentAnalysisService(app.db, app.ai.llm);
 
   app.post("/", async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -31,6 +33,26 @@ export async function documentRoutes(app: FastifyInstance) {
       const { id } = request.params as { id: string };
       const doc = await service.getById(request.user.sub, id);
       return reply.status(200).send({ document: doc });
+    } catch (error) {
+      return handleError(error, reply);
+    }
+  });
+
+  app.post("/:id/analyze", async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const analysis = await analysisService.analyze(request.user.sub, id);
+      return reply.status(201).send({ analysis });
+    } catch (error) {
+      return handleError(error, reply);
+    }
+  });
+
+  app.get("/:id/analyses", async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { id } = request.params as { id: string };
+      const result = await analysisService.listByDocument(request.user.sub, id);
+      return reply.status(200).send(result);
     } catch (error) {
       return handleError(error, reply);
     }

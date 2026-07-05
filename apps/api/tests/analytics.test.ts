@@ -35,6 +35,9 @@ describe("Analytics API", () => {
     expect(body.analytics.totalSessions).toBe(0);
     expect(body.analytics.role).toBe("user");
     expect(body.analytics.onboardingCompleted).toBe(false);
+    expect(body.analytics.recentSessions).toEqual([]);
+    expect(body.analytics.recentDocuments).toEqual([]);
+    expect(body.analytics.totalAnalyses).toBe(0);
   });
 
   it("should reflect activity after chat and documents", async () => {
@@ -73,5 +76,31 @@ describe("Analytics API", () => {
     expect(analytics.totalSessions).toBe(1);
     expect(analytics.totalMessages).toBeGreaterThanOrEqual(2);
     expect(analytics.totalDocuments).toBe(1);
+    expect(analytics.recentSessions).toHaveLength(1);
+    expect(analytics.recentDocuments).toHaveLength(1);
+  });
+
+  it("should include lawyer profile after onboarding", async () => {
+    await app.inject({
+      method: "POST",
+      url: "/api/v1/onboarding/lawyer",
+      headers: authHeaders(),
+      payload: {
+        licenseNumber: "LIC-111",
+        specialization: "قانون تجاري",
+        barAssociation: "نقابة الرياض",
+      },
+    });
+
+    const response = await app.inject({
+      method: "GET",
+      url: "/api/v1/analytics/me",
+      headers: authHeaders(),
+    });
+
+    const { analytics } = response.json();
+    expect(analytics.isLawyer).toBe(true);
+    expect(analytics.lawyerProfile?.licenseNumber).toBe("LIC-111");
+    expect(analytics.onboardingCompleted).toBe(true);
   });
 });

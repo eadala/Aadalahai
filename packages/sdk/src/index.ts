@@ -16,4 +16,7 @@ export type {
   OnboardingStatus,
   LawyerProfile,
   LawyerOnboardingInput,
+  DocumentAnalysis,
+  DocumentAnalysisClause,
+  DocumentAnalysisRisk,
 } from "./types.js";

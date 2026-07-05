@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { isAuthenticated } from "@/lib/auth";
-import type { Document } from "@/lib/types";
+import type { Document, DocumentAnalysis } from "@/lib/types";
 import { AdalahApiError } from "@adalah/sdk";
 
 export default function DocumentsPage() {
@@ -16,6 +16,8 @@ export default function DocumentsPage() {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [analyzingId, setAnalyzingId] = useState<string | null>(null);
+  const [analysisByDoc, setAnalysisByDoc] = useState<Record<string, DocumentAnalysis | null>>({});
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -49,6 +51,21 @@ export default function DocumentsPage() {
     }
   }
 
+  async function handleAnalyze(docId: string) {
+    setAnalyzingId(docId);
+    setError("");
+
+    try {
+      const { analysis } = await api.analyzeDocument(docId);
+      setAnalysisByDoc((prev) => ({ ...prev, [docId]: analysis }));
+    } catch (err) {
+      if (err instanceof AdalahApiError) setError(err.message);
+      else setError("فشل تحليل الوثيقة");
+    } finally {
+      setAnalyzingId(null);
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -64,15 +81,23 @@ export default function DocumentsPage() {
           <div>
             <h1 className="text-xl font-bold text-[var(--accent)]">الوثائق القانونية</h1>
             <p className="text-sm text-[var(--text-secondary)]">
-              ارفع وثائقك لتستخدمها في المحادثة
+              ارفع وثائقك واستخدم التحليل الذكي أو المحادثة
             </p>
           </div>
-          <Link
-            href="/chat"
-            className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--bg-secondary)]"
-          >
-            العودة للمحادثة
-          </Link>
+          <div className="flex gap-2">
+            <Link
+              href="/dashboard"
+              className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--bg-secondary)]"
+            >
+              لوحة التحكم
+            </Link>
+            <Link
+              href="/chat"
+              className="rounded-lg border border-[var(--border)] px-4 py-2 text-sm hover:bg-[var(--bg-secondary)]"
+            >
+              العودة للمحادثة
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -135,9 +160,20 @@ export default function DocumentsPage() {
                   key={doc.id}
                   className="rounded-xl border border-[var(--border)] bg-[var(--bg-secondary)] p-4"
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <h3 className="font-medium">{doc.title}</h3>
-                    <StatusBadge status={doc.status} />
+                    <div className="flex items-center gap-2">
+                      <StatusBadge status={doc.status} />
+                      {doc.status === "ready" && (
+                        <button
+                          onClick={() => handleAnalyze(doc.id)}
+                          disabled={analyzingId === doc.id}
+                          className="rounded-lg bg-[var(--accent)] px-3 py-1 text-xs hover:bg-[var(--accent-hover)] disabled:opacity-50"
+                        >
+                          {analyzingId === doc.id ? "جاري التحليل..." : "تحليل"}
+                        </button>
+                      )}
+                    </div>
                   </div>
                   <p className="mt-2 text-sm text-[var(--text-secondary)] line-clamp-2">
                     {doc.contentPreview}
@@ -147,12 +183,62 @@ export default function DocumentsPage() {
                       {doc.chunkCount} مقطع مفهرس
                     </p>
                   )}
+
+                  {analysisByDoc[doc.id] && (
+                    <AnalysisPanel analysis={analysisByDoc[doc.id]!} />
+                  )}
                 </div>
               ))}
             </div>
           )}
         </section>
       </main>
+    </div>
+  );
+}
+
+function AnalysisPanel({ analysis }: { analysis: DocumentAnalysis }) {
+  return (
+    <div className="mt-4 rounded-lg border border-[var(--border)] bg-[var(--bg-tertiary)] p-4">
+      <h4 className="mb-2 font-medium text-[var(--accent)]">نتيجة التحليل</h4>
+      <p className="text-sm">{analysis.summary}</p>
+
+      {analysis.keyClauses.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-medium text-[var(--text-secondary)]">البنود الرئيسية</p>
+          <ul className="mt-1 space-y-1 text-sm">
+            {analysis.keyClauses.map((clause, i) => (
+              <li key={i}>
+                <strong>{clause.title}:</strong> {clause.content}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {analysis.risks.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-medium text-[var(--text-secondary)]">المخاطر</p>
+          <ul className="mt-1 space-y-1 text-sm">
+            {analysis.risks.map((risk, i) => (
+              <li key={i}>
+                [{risk.level}] {risk.description}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {analysis.recommendations.length > 0 && (
+        <div className="mt-3">
+          <p className="text-xs font-medium text-[var(--text-secondary)]">التوصيات</p>
+          <ul className="mt-1 list-disc pr-5 text-sm">
+            {analysis.recommendations.map((rec, i) => (
+              <li key={i}>{rec}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

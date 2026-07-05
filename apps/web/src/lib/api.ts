@@ -22,7 +22,7 @@ const client = new AdalahClient({
   },
 });
 
-export type { User, AuthTokens, Message, ChatSession, Document, StreamEvent, Citation, UserAnalytics, OnboardingStatus, LawyerOnboardingInput } from "@adalah/sdk";
+export type { User, AuthTokens, Message, ChatSession, Document, StreamEvent, Citation, UserAnalytics, OnboardingStatus, LawyerOnboardingInput, DocumentAnalysis } from "@adalah/sdk";
 
 export const api = {
   async register(email: string, password: string, name: string) {
@@ -60,6 +60,9 @@ export const api = {
   uploadDocument: (title: string, content: string) =>
     client.documents.upload(title, content),
   listDocuments: () => client.documents.list(),
+
+  analyzeDocument: (id: string) => client.documents.analyze(id),
+  listDocumentAnalyses: (id: string) => client.documents.listAnalyses(id),
 
   getAnalytics: () => client.analytics.me(),
   getOnboardingStatus: () => client.onboarding.getStatus(),

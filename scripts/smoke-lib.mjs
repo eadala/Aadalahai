@@ -137,8 +137,21 @@ export async function runSmokeTests({
         content: "المادة 77: يحق للعامل الحصول على إجازة سنوية مدفوعة الأجر.",
       }),
     });
-    if (res.status === 201 && body?.document?.id) pass("document upload");
-    else fail(`document upload (${res.status})`);
+    if (res.status === 201 && body?.document?.id) {
+      pass("document upload");
+
+      const docId = body.document.id;
+      const analyzeRes = await api(`/api/v1/documents/${docId}/analyze`, {
+        method: "POST",
+        headers: auth,
+        body: JSON.stringify({}),
+      });
+      if (analyzeRes.res.status === 201 && analyzeRes.body?.analysis?.summary) {
+        pass("document analyze");
+      } else {
+        fail(`document analyze (${analyzeRes.res.status})`);
+      }
+    } else fail(`document upload (${res.status})`);
   }
 
   let sessionId = "";
@@ -168,6 +181,12 @@ export async function runSmokeTests({
     const { res, body } = await api("/api/v1/documents", { headers: auth });
     if (res.ok && Array.isArray(body?.documents)) pass("documents list");
     else fail(`documents list (${res.status})`);
+  }
+
+  {
+    const { res, body } = await api("/api/v1/analytics/me", { headers: auth });
+    if (res.ok && typeof body?.analytics?.totalSessions === "number") pass("analytics/me");
+    else fail(`analytics/me (${res.status})`);
   }
 
   {

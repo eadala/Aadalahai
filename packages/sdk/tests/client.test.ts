@@ -129,4 +129,42 @@ describe("AdalahClient", () => {
     );
     fetchSpy.mockRestore();
   });
+
+  it("should analyze document", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 201,
+      json: async () => ({
+        analysis: {
+          id: "a1",
+          documentId: "d1",
+          documentTitle: "عقد",
+          summary: "ملخص",
+          keyClauses: [],
+          risks: [],
+          recommendations: [],
+          createdAt: "2026-07-05T00:00:00.000Z",
+        },
+      }),
+    });
+
+    const result = await client.documents.analyze("d1");
+    expect(result.analysis.summary).toBe("ملخص");
+    expect(mockFetch.mock.calls[0][0]).toContain("/api/v1/documents/d1/analyze");
+  });
+
+  it("should list document analyses", async () => {
+    mockFetch.mockResolvedValueOnce({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        documentId: "d1",
+        documentTitle: "عقد",
+        analyses: [],
+      }),
+    });
+
+    const result = await client.documents.listAnalyses("d1");
+    expect(result.analyses).toEqual([]);
+  });
 });
