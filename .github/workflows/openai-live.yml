@@ -1,0 +1,37 @@
+name: OpenAI Live Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "openai" to run live OpenAI tests'
+        required: true
+
+jobs:
+  openai-live:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'openai'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run OpenAI smoke script
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: gpt-4o-mini
+          OPENAI_EMBEDDING_MODEL: text-embedding-3-small
+        run: node scripts/openai-smoke.mjs
+
+      - name: Run OpenAI live vitest
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RUN_OPENAI_LIVE: "1"
+        run: npm run test -w @adalah/api -- tests/openai-live.test.ts

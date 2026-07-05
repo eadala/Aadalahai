@@ -1,25 +1,22 @@
 import type { LLMMessage, LLMOptions, LLMProvider } from "../types.js";
-
-const LEGAL_SYSTEM_PROMPT = `أنت مساعد قانوني ذكي في منصة عدالة.
-أجب بالعربية الفصحى بناءً على السياق المقدم فقط.
-إن لم تجد إجابة في السياق، قل ذلك بوضوح.
-أضف تحذيرًا: "هذه المعلومات استشارية وليست استشارة قانونية رسمية."`;
+import { promptHasRagContext } from "../prompts/legal-assistant.js";
 
 export class MockLLMProvider implements LLMProvider {
   readonly name = "mock";
 
   async complete(messages: LLMMessage[], options?: LLMOptions): Promise<string> {
     const lastUser = [...messages].reverse().find((m) => m.role === "user");
-    const hasContext = options?.systemPrompt?.includes("[1]");
+    const hasContext = promptHasRagContext(options?.systemPrompt);
     const contextNote = hasContext ? " بناءً على [1]" : "";
-    return `إجابة تجريبية${contextNote}: ${lastUser?.content ?? "لا يوجد سؤال"}. هذه المعلومات استشارية وليست استشارة قانونية رسمية.`;
+    return (
+      `**الملخص:** إجابة تجريبية${contextNote}.\n` +
+      `**التفصيل:** ${lastUser?.content ?? "لا يوجد سؤال"}\n` +
+      `**تنبيه:** هذه المعلومات استشارية وليست استشارة قانونية رسمية — راجع محامٍ مرخّص.`
+    );
   }
 
   async *stream(messages: LLMMessage[], options?: LLMOptions): AsyncGenerator<string> {
-    const text = await this.complete(messages, {
-      ...options,
-      systemPrompt: options?.systemPrompt ?? LEGAL_SYSTEM_PROMPT,
-    });
+    const text = await this.complete(messages, options);
     const words = text.split(" ");
     for (const word of words) {
       yield word + " ";

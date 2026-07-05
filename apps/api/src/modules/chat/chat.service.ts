@@ -3,14 +3,8 @@ import type { Database } from "../../db/index.js";
 import { chatSessions, messages } from "../../db/schema.js";
 import type { LLMProvider, LLMMessage } from "../../ai/types.js";
 import { RAGService } from "../rag/rag.service.js";
-import { formatCitationReferences } from "../rag/citation.service.js";
+import { buildLegalSystemPrompt } from "../../ai/prompts/legal-assistant.js";
 import { AppError } from "../../lib/errors.js";
-
-const LEGAL_SYSTEM_PROMPT = `أنت مساعد قانوني ذكي في منصة عدالة.
-أجب بالعربية الفصحى بناءً على السياق المقدم فقط.
-أشر إلى المصادر بالأرقام بين أقواس مربعة مثل [1] و[2] عند الاستشهاد.
-إن لم تجد إجابة في السياق، قل ذلك بوضوح دون اختراع معلومات.
-أضف تحذيرًا: "هذه المعلومات استشارية وليست استشارة قانونية رسمية."`;
 
 export class ChatService {
   constructor(
@@ -144,12 +138,7 @@ export class ChatService {
   }
 
   private buildSystemPrompt(context: string, citations: import("../../db/schema.js").Citation[]) {
-    if (!context) {
-      return `${LEGAL_SYSTEM_PROMPT}\n\nملاحظة: لا توجد وثائق قانونية مرفوعة. أخبر المستخدم بضرورة رفع وثائق للحصول على إجابات مدعومة بمصادر.`;
-    }
-
-    const refs = formatCitationReferences(citations);
-    return `${LEGAL_SYSTEM_PROMPT}\n\nالسياق القانوني:\n${context}\n\nقائمة المصادر:\n${refs}`;
+    return buildLegalSystemPrompt({ context, citations });
   }
 
   private async maybeUpdateSessionTitle(

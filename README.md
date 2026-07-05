@@ -103,6 +103,14 @@ npm run prod:smoke
 
 راجع [packages/sdk/README.md](packages/sdk/README.md) و [`.docs/API/openapi.yaml`](.docs/API/openapi.yaml).
 
+## OpenAI Live Validation
+
+```bash
+OPENAI_API_KEY=sk-... npm run openai:smoke
+```
+
+أو في CI: Actions → **OpenAI Live Validation** (يتطلب `OPENAI_API_KEY` secret).
+
 ## الترخيص
 
 TBD

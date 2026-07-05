@@ -25,6 +25,7 @@
     "prod:down": "docker compose -f docker-compose.prod.yml --env-file .env.prod down",
     "prod:smoke": "node scripts/production-smoke.mjs",
     "prod:logs": "docker compose -f docker-compose.prod.yml --env-file .env.prod logs -f",
+    "openai:smoke": "node scripts/openai-smoke.mjs",
     "lint": "npm run lint -w @adalah/api && npm run lint -w @adalah/web && npm run lint -w @adalah/sdk",
     "db:generate": "npm run db:generate -w @adalah/api",
     "db:migrate": "npm run db:migrate -w @adalah/api",

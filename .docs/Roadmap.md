@@ -31,7 +31,9 @@
 
 - [x] OpenAI integration (providers + env + error handling)
 - [x] Production monitoring (health, ready, metrics)
-- [ ] Fine-tuning / prompt engineering للسياق القانوني العربي
+- [x] Prompt engineering للسياق القانوني العربي
+- [x] OpenAI live validation
+- [ ] Fine-tuning
 - [ ] تحليل عقود ومستندات
 - [ ] بحث في التشريعات والسوابق
 
@@ -62,7 +64,8 @@
 | OpenAI + Monitoring | Sprint-007 | ✅ |
 | Staging + Smoke tests | Sprint-008 | ✅ |
 | Production + HTTPS | Sprint-009 | ✅ |
-| Prompt engineering | Sprint-010 | ⬜ مخطط |
+| Prompt engineering | Sprint-010 | ✅ |
+| Analytics + Onboarding | Sprint-011 | ⬜ مخطط |
 
 ## كيفية تحديث هذه الوثيقة
 

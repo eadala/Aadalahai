@@ -18,6 +18,8 @@
 | F-012 | Production monitoring | Sprint-007 | 2026-07-05 |
 | F-013 | Staging deployment | Sprint-008 | 2026-07-05 |
 | F-015 | Production deploy + HTTPS | Sprint-009 | 2026-07-05 |
+| F-014 | Prompt engineering عربي | Sprint-010 | 2026-07-05 |
+| F-016 | OpenAI live validation | Sprint-010 | 2026-07-05 |
 
 ## جاري 🟡
 
@@ -29,8 +31,7 @@
 
 | # | الميزة | السبرنت المستهدف | الأولوية |
 |---|---|---|---|
-| F-014 | Prompt engineering عربي | Sprint-010 | عالي |
-| F-016 | OpenAI live validation | Sprint-010 | متوسط |
+| F-017 | Analytics dashboard | Sprint-011 | متوسط |
 
 ## مرفوض ❌
 
