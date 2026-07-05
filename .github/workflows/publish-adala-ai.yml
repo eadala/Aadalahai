@@ -1,0 +1,33 @@
+name: Publish to adala-ai
+
+# Syncs this codebase to the canonical repo eadala/adala-ai (replaces legacy Replit main).
+# Repo admin: add secret ADALA_AI_SYNC_TOKEN (classic PAT with repo scope on eadala/adala-ai).
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "publish" to push main to eadala/adala-ai'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'publish'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish to eadala/adala-ai
+        env:
+          ADALA_AI_SYNC_TOKEN: ${{ secrets.ADALA_AI_SYNC_TOKEN }}
+        run: |
+          if [ -z "${ADALA_AI_SYNC_TOKEN}" ]; then
+            echo "Missing secret ADALA_AI_SYNC_TOKEN — create a PAT with repo access to eadala/adala-ai"
+            exit 1
+          fi
+          git remote add adala-ai "https://x-access-token:${ADALA_AI_SYNC_TOKEN}@github.com/eadala/adala-ai.git"
+          chmod +x scripts/publish-to-adala-ai.sh
+          ./scripts/publish-to-adala-ai.sh

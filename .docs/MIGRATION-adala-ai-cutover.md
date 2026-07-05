@@ -26,6 +26,22 @@
 - VPS مع Docker
 - Cloudflare DNS لـ `adalahai.com`
 - `OPENAI_API_KEY`
+- صلاحية **write** على `eadala/adala-ai` (لنشر الكود مرة واحدة)
+
+## الخطوة 0 — نشر الكود إلى `adala-ai` (مرة واحدة)
+
+الكود الحالي (Engineering OS) يُدفع إلى `main` في المستودع الوحيد:
+
+```bash
+chmod +x scripts/publish-to-adala-ai.sh
+./scripts/publish-to-adala-ai.sh
+```
+
+أو من GitHub Actions (بعد إضافة secret `ADALA_AI_SYNC_TOKEN`):
+
+`Actions → Publish to adala-ai → Run workflow` (اكتب `publish`)
+
+يحفظ الكود القديم (Replit) في tag: `legacy-replit-pre-cutover`
 
 ## الخطوة 1 — إيقاف Replit
 

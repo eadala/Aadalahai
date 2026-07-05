@@ -17,10 +17,14 @@
 
 ## Sprint-017 — adala-ai على adalahai.com ✅
 
-- نفس المستودع `eadala/adala-ai` — استبدال كود Replit
-- `.env.prod.adalahai.example` + `cutover-adalahai.sh`
+- نفس المستودع `eadala/adala-ai` — استبدال كود Replit (لا مستودع `Aadalahai` منفصل)
+- `.env.prod.adalahai.example` + `cutover-adalahai.sh` + `publish-to-adala-ai.sh`
 - tag `legacy-replit-pre-cutover` للكود القديم
+- workflow: `Publish to adala-ai` (يتطلب secret `ADALA_AI_SYNC_TOKEN`)
 
 ## الخطوة التالية
 
-Sprint-018: تنفيذ النشر على VPS + smoke على https://adalahai.com
+Sprint-018:
+1. `./scripts/publish-to-adala-ai.sh` (أو workflow) — دفع `main` إلى `eadala/adala-ai`
+2. VPS + DNS + `./scripts/cutover-adalahai.sh`
+3. smoke على https://adalahai.com
