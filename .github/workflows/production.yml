@@ -20,6 +20,8 @@ jobs:
           cp .env.prod.example .env.prod
           sed -i "s/change-me-strong-password/prod-ci-$(openssl rand -hex 8)/" .env.prod
           sed -i "s/change-me-to-random-64-char-string-in-production-minimum-32/prod-ci-jwt-$(openssl rand -hex 16)/" .env.prod
+          sed -i "s/LLM_PROVIDER=openai/LLM_PROVIDER=mock/" .env.prod
+          sed -i "s/EMBEDDER_PROVIDER=openai/EMBEDDER_PROVIDER=mock/" .env.prod
 
       - name: Deploy production stack (direct mode)
         run: docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build --wait

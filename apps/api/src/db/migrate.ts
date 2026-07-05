@@ -6,7 +6,7 @@ const connectionString =
   process.env.DATABASE_URL ?? "postgresql://adalah:adalah_dev@localhost:5432/adalah";
 
 async function runMigrations() {
-  const client = postgres(connectionString, { max: 1 });
+  const client = postgres(connectionString, { max: 1, connect_timeout: 30 });
   const db = drizzle(client);
 
   console.log("Running migrations...");

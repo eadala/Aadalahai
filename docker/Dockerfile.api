@@ -28,6 +28,7 @@ COPY --from=build /app/apps/api/dist ./dist
 COPY --from=build /app/apps/api/package.json ./package.json
 COPY apps/api/src/db/migrations ./src/db/migrations
 COPY docker/api-entrypoint.sh ./entrypoint.sh
+COPY docker/wait-for-db.mjs ./wait-for-db.mjs
 
 RUN chmod +x ./entrypoint.sh && chown -R adalah:adalah /app
 USER adalah

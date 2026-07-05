@@ -25,6 +25,7 @@
 | F-019 | Lawyer dashboard expansion | Sprint-012 | 2026-07-05 |
 | F-020 | Document analysis MVP | Sprint-012 | 2026-07-05 |
 | F-021 | Hybrid legal search | Sprint-013 | 2026-07-05 |
+| F-022 | Staging + Production deploy validation | Sprint-014 | 2026-07-05 |
 
 ## جاري 🟡
 
