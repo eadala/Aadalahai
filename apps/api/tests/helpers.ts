@@ -76,17 +76,28 @@ export async function createTestApp() {
 }
 
 export async function registerTestUser(app: Awaited<ReturnType<typeof buildApp>>) {
-  const response = await app.inject({
+  const payload = {
+    email: "chat-test@example.com",
+    password: "SecurePass1",
+    name: "مستخدم تجريبي",
+  };
+
+  let response = await app.inject({
     method: "POST",
     url: "/api/v1/auth/register",
-    payload: {
-      email: "chat-test@example.com",
-      password: "SecurePass1",
-      name: "مستخدم تجريبي",
-    },
+    payload,
   });
+
+  if (response.statusCode === 409) {
+    response = await app.inject({
+      method: "POST",
+      url: "/api/v1/auth/login",
+      payload: { email: payload.email, password: payload.password },
+    });
+  }
+
   const body = response.json();
-  if (response.statusCode !== 201) {
+  if (response.statusCode !== 201 && response.statusCode !== 200) {
     throw new Error(`Registration failed: ${response.statusCode} ${JSON.stringify(body)}`);
   }
   return {
