@@ -3,6 +3,7 @@ import cors from "@fastify/cors";
 import jwt from "@fastify/jwt";
 import type { FastifyRequest, FastifyReply } from "fastify";
 import type { Env } from "./config/env.js";
+import { resolveCorsOrigin } from "./config/env.js";
 import { createDb, type Database } from "./db/index.js";
 import { createAIProviders, type AIProviders } from "./ai/factory.js";
 import { authRoutes } from "./modules/auth/auth.routes.js";
@@ -36,6 +37,7 @@ declare module "@fastify/jwt" {
 export async function buildApp(env: Env) {
   const app = Fastify({
     logger: env.NODE_ENV !== "test",
+    trustProxy: env.NODE_ENV === "production",
   });
 
   const db = createDb(env.DATABASE_URL);
@@ -45,7 +47,7 @@ export async function buildApp(env: Env) {
   app.decorate("db", db);
   app.decorate("ai", ai);
 
-  await app.register(cors, { origin: true });
+  await app.register(cors, { origin: resolveCorsOrigin(env) });
 
   await app.register(jwt, {
     secret: env.JWT_SECRET,

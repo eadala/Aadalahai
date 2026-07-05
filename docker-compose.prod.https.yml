@@ -1,0 +1,33 @@
+# HTTPS overlay — use with docker-compose.prod.yml
+# Adds Caddy reverse proxy and removes direct api/web port exposure
+services:
+  api:
+    ports: !reset []
+
+  web:
+    ports: !reset []
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: adalah-prod-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      WEB_DOMAIN: ${WEB_DOMAIN:?WEB_DOMAIN required}
+      API_DOMAIN: ${API_DOMAIN:?API_DOMAIN required}
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL required}
+    volumes:
+      - ./docker/Caddyfile:/etc/caddy/Caddyfile:ro
+      - prod_caddy_data:/data
+      - prod_caddy_config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+      web:
+        condition: service_started
+
+volumes:
+  prod_caddy_data:
+  prod_caddy_config:

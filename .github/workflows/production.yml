@@ -1,0 +1,41 @@
+name: Production Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "deploy" to confirm production deployment'
+        required: true
+
+jobs:
+  production-smoke:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.confirm == 'deploy'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Create production env file
+        run: |
+          cp .env.prod.example .env.prod
+          sed -i "s/change-me-strong-password/prod-ci-$(openssl rand -hex 8)/" .env.prod
+          sed -i "s/change-me-to-random-64-char-string-in-production-minimum-32/prod-ci-jwt-$(openssl rand -hex 16)/" .env.prod
+
+      - name: Deploy production stack (direct mode)
+        run: docker compose -f docker-compose.prod.yml --env-file .env.prod up -d --build --wait
+        timeout-minutes: 15
+
+      - name: Run production smoke tests
+        run: node scripts/production-smoke.mjs
+        env:
+          API_URL: http://localhost:3001
+          WEB_URL: http://localhost:3000
+          PROD_WAIT_MS: 180000
+
+      - name: Show logs on failure
+        if: failure()
+        run: docker compose -f docker-compose.prod.yml --env-file .env.prod logs --no-color
+
+      - name: Tear down
+        if: always()
+        run: docker compose -f docker-compose.prod.yml --env-file .env.prod down -v

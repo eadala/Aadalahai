@@ -27,6 +27,8 @@ const envSchema = z.object({
     .enum(["true", "false", "1", "0"])
     .default("true")
     .transform((v) => v === "true" || v === "1"),
+
+  CORS_ORIGINS: z.string().optional(),
 });
 
 export type Env = z.infer<typeof envSchema>;
@@ -56,4 +58,9 @@ export function getOpenAIFetchOptions(env: Env) {
     timeoutMs: env.OPENAI_TIMEOUT_MS,
     maxRetries: env.OPENAI_MAX_RETRIES,
   };
+}
+
+export function resolveCorsOrigin(env: Env): boolean | string[] {
+  if (!env.CORS_ORIGINS || env.CORS_ORIGINS.trim() === "") return true;
+  return env.CORS_ORIGINS.split(",").map((o) => o.trim()).filter(Boolean);
 }

@@ -61,7 +61,8 @@
 | API SDK + Deploy | Sprint-006 | ✅ |
 | OpenAI + Monitoring | Sprint-007 | ✅ |
 | Staging + Smoke tests | Sprint-008 | ✅ |
-| Production + HTTPS | Sprint-009 | ⬜ مخطط |
+| Production + HTTPS | Sprint-009 | ✅ |
+| Prompt engineering | Sprint-010 | ⬜ مخطط |
 
 ## كيفية تحديث هذه الوثيقة
 

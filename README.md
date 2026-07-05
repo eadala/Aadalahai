@@ -88,15 +88,18 @@ await client.system.ready();
 await client.auth.login("user@example.com", "SecurePass1");
 ```
 
-## OpenAI (إنتاج)
+## Production (VPS + HTTPS)
 
 ```bash
-LLM_PROVIDER=openai
-EMBEDDER_PROVIDER=openai
-OPENAI_API_KEY=sk-your-key
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
+cp .env.prod.example .env.prod
+# DOMAIN=adalah.example.com
+# API_DOMAIN=api.adalah.example.com
+# ACME_EMAIL=admin@adalah.example.com
+./scripts/deploy-prod.sh
+npm run prod:smoke
 ```
+
+راجع [.docs/DEPLOYMENT.md](.docs/DEPLOYMENT.md) لدليل النشر الكامل.
 
 راجع [packages/sdk/README.md](packages/sdk/README.md) و [`.docs/API/openapi.yaml`](.docs/API/openapi.yaml).
 
