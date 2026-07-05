@@ -101,11 +101,15 @@ export interface UserAnalytics {
   totalDocuments: number;
   messagesThisWeek: number;
   documentsReady: number;
+  totalAnalyses: number;
   role: string;
   isLawyer: boolean;
   onboardingCompleted: boolean;
   memberSince: string;
   lastActivityAt: string | null;
+  lawyerProfile: LawyerProfile | null;
+  recentSessions: Array<{ id: string; title: string; updatedAt: string }>;
+  recentDocuments: Array<{ id: string; title: string; status: string; createdAt: string }>;
 }
 
 export interface LawyerProfile {
@@ -128,4 +132,25 @@ export interface LawyerOnboardingInput {
   specialization: string;
   barAssociation: string;
   phone?: string;
+}
+
+export interface DocumentAnalysisClause {
+  title: string;
+  content: string;
+}
+
+export interface DocumentAnalysisRisk {
+  level: "high" | "medium" | "low";
+  description: string;
+}
+
+export interface DocumentAnalysis {
+  id: string;
+  documentId: string;
+  documentTitle: string;
+  summary: string;
+  keyClauses: DocumentAnalysisClause[];
+  risks: DocumentAnalysisRisk[];
+  recommendations: string[];
+  createdAt: string;
 }

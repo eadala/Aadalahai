@@ -1,6 +1,6 @@
 # خارطة الطريق — عدالة
 
-> آخر تحديث: Sprint-011 | الحالة: **مرحلة 2 جارية**
+> آخر تحديث: Sprint-012 | الحالة: **مرحلة 2 جارية**
 
 ## المراحل
 
@@ -34,7 +34,7 @@
 - [x] Prompt engineering للسياق القانوني العربي
 - [x] OpenAI live validation
 - [ ] Fine-tuning
-- [ ] تحليل عقود ومستندات
+- [x] تحليل عقود ومستندات (MVP — Sprint-012)
 - [ ] بحث في التشريعات والسوابق
 
 ### المرحلة 3 — المنصة المتكاملة
@@ -66,6 +66,7 @@
 | Production + HTTPS | Sprint-009 | ✅ |
 | Prompt engineering | Sprint-010 | ✅ |
 | Analytics + Onboarding | Sprint-011 | ✅ |
+| Dashboard + Doc Analysis | Sprint-012 | ✅ |
 
 ## كيفية تحديث هذه الوثيقة
 

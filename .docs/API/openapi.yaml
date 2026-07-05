@@ -140,6 +140,35 @@ paths:
       tags: [Documents]
       security: [{ bearerAuth: [] }]
 
+  /api/v1/documents/{id}/analyze:
+    post:
+      summary: Analyze document with AI
+      tags: [Documents]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "201":
+          description: Analysis created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  analysis:
+                    $ref: "#/components/schemas/DocumentAnalysis"
+        "400":
+          description: Document not ready
+        "404":
+          description: Document not found
+
+  /api/v1/documents/{id}/analyses:
+    get:
+      summary: List document analyses
+      tags: [Documents]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: Analysis history
+
   /api/v1/analytics/me:
     get:
       summary: User activity analytics
@@ -228,11 +257,59 @@ components:
         totalDocuments: { type: integer }
         messagesThisWeek: { type: integer }
         documentsReady: { type: integer }
+        totalAnalyses: { type: integer }
         role: { type: string }
         isLawyer: { type: boolean }
         onboardingCompleted: { type: boolean }
         memberSince: { type: string, format: date-time }
         lastActivityAt: { type: string, format: date-time, nullable: true }
+        lawyerProfile:
+          oneOf:
+            - $ref: "#/components/schemas/LawyerProfile"
+            - type: "null"
+        recentSessions:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              title: { type: string }
+              updatedAt: { type: string, format: date-time }
+        recentDocuments:
+          type: array
+          items:
+            type: object
+            properties:
+              id: { type: string }
+              title: { type: string }
+              status: { type: string }
+              createdAt: { type: string, format: date-time }
+
+    DocumentAnalysis:
+      type: object
+      properties:
+        id: { type: string }
+        documentId: { type: string }
+        documentTitle: { type: string }
+        summary: { type: string }
+        keyClauses:
+          type: array
+          items:
+            type: object
+            properties:
+              title: { type: string }
+              content: { type: string }
+        risks:
+          type: array
+          items:
+            type: object
+            properties:
+              level: { type: string, enum: [high, medium, low] }
+              description: { type: string }
+        recommendations:
+          type: array
+          items: { type: string }
+        createdAt: { type: string, format: date-time }
 
     LawyerProfile:
       type: object

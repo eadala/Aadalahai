@@ -84,6 +84,19 @@ export class AdalahClient {
 
     get: (id: string) =>
       this.get<{ document: import("./types.js").Document }>(`/api/v1/documents/${id}`),
+
+    analyze: (id: string) =>
+      this.post<{ analysis: import("./types.js").DocumentAnalysis }>(
+        `/api/v1/documents/${id}/analyze`,
+        {}
+      ),
+
+    listAnalyses: (id: string) =>
+      this.get<{
+        documentId: string;
+        documentTitle: string;
+        analyses: import("./types.js").DocumentAnalysis[];
+      }>(`/api/v1/documents/${id}/analyses`),
   };
 
   readonly health = {

@@ -50,7 +50,7 @@ export async function cleanupTestDb() {
   const client = postgres(TEST_DATABASE_URL, { max: 1 });
   await client`
     TRUNCATE TABLE
-      document_chunks, documents, messages, chat_sessions,
+      document_analyses, document_chunks, documents, messages, chat_sessions,
       lawyer_profiles, refresh_tokens, users
     RESTART IDENTITY CASCADE
   `;

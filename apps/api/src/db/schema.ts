@@ -115,6 +115,28 @@ export const documentChunks = pgTable(
   (table) => [index("document_chunks_document_id_idx").on(table.documentId)]
 );
 
+export const documentAnalyses = pgTable(
+  "document_analyses",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    documentId: uuid("document_id")
+      .notNull()
+      .references(() => documents.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    summary: text("summary").notNull(),
+    keyClauses: jsonb("key_clauses").$type<Array<{ title: string; content: string }>>().notNull().default([]),
+    risks: jsonb("risks").$type<Array<{ level: string; description: string }>>().notNull().default([]),
+    recommendations: jsonb("recommendations").$type<string[]>().notNull().default([]),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("document_analyses_document_id_idx").on(table.documentId),
+    index("document_analyses_user_id_idx").on(table.userId),
+  ]
+);
+
 export const lawyerProfiles = pgTable("lawyer_profiles", {
   userId: uuid("user_id")
     .primaryKey()
@@ -181,6 +203,18 @@ export const documentsRelations = relations(documents, ({ one, many }) => ({
     references: [users.id],
   }),
   chunks: many(documentChunks),
+  analyses: many(documentAnalyses),
+}));
+
+export const documentAnalysesRelations = relations(documentAnalyses, ({ one }) => ({
+  document: one(documents, {
+    fields: [documentAnalyses.documentId],
+    references: [documents.id],
+  }),
+  user: one(users, {
+    fields: [documentAnalyses.userId],
+    references: [users.id],
+  }),
 }));
 
 export const documentChunksRelations = relations(documentChunks, ({ one }) => ({
@@ -205,3 +239,4 @@ export type Message = typeof messages.$inferSelect;
 export type Document = typeof documents.$inferSelect;
 export type DocumentChunk = typeof documentChunks.$inferSelect;
 export type LawyerProfile = typeof lawyerProfiles.$inferSelect;
+export type DocumentAnalysis = typeof documentAnalyses.$inferSelect;

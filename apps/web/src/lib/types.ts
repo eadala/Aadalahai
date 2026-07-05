@@ -7,4 +7,5 @@ export type {
   Citation,
   LegalArticle,
   StreamEvent,
+  DocumentAnalysis,
 } from "@adalah/sdk";
